@@ -1,0 +1,309 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+{% block content %}
+
+<link type="text/css" href="{% static 'catalog/css/etable.css' %}" rel="stylesheet"/>
+
+<script src="{% static 'catalog/js/exezakaz.js' %}" ></script>
+
+<table class="table table-bordered border-primary">
+  <thead>
+      <tr>
+          <th>{{title}}</th>
+          <th>В системе:</th>                
+      </tr>
+  </thead>
+  
+  <tbody class="table-info table-hover">
+
+      <tr class="table-info table-hover">
+              <td>{{user.username}}</td>
+              <td>{{user.JT}}</td>
+      </tr>
+  </tbody>
+</table>
+
+<form action="{% url 'ExeZakazHim' %}" method="post">
+
+{% csrf_token %}
+
+<!-- Сначала я вывожу комментарии -->
+<table style="width: 100%;">    
+
+{% for r in remark %}      
+
+  <tr class="table-danger" style="background-color: hwb(352 29% 32% / 0.769); 
+  color: rgb(255, 255, 255); 
+  width: 50%;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  border-width: 2px;
+  border-color: #cffced;
+  border-radius: 5px;
+  padding-top: 6px;
+  padding-left: 5px;
+  ">     
+      <td style="background-color: hwb(352 29% 32% / 0.769); 
+                  color: rgb(255, 255, 255); 
+                  width: 50%;
+                  font-family: Verdana, Geneva, Tahoma, sans-serif;
+                  border-width: 2px;
+                  border-color: #cffced;
+                  border-radius: 5px;
+                  padding-top: 6px;
+                  padding-left: 5px;
+                  ">{{r.remark}}</td>
+      <td style="background-color: hwb(352 29% 32% / 0.769); 
+      color: rgb(255, 255, 255); 
+      width: 80px;
+      font-size: 12px;
+      text-align: center;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      border-width: 2px;
+      border-color: #cffced;
+      border-radius: 5px;
+      padding-top: 6px;
+      padding-left: 5px;">{{r.creator}}, {{r.date|date:"d-m-Y"}} {{r.date|time:"H:i"}}</td>
+      <td style="background-color: hwb(352 29% 32% / 0.769); 
+      color: rgb(255, 255, 255); 
+      width: 60px;
+      text-align: center;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      border-width: 2px;
+      border-color: #cffced;
+      border-radius: 5px;
+      padding-top: 6px;
+      padding-bottom: 6px;
+      "><button class="btn btn-light" type="submit" value=rm{{r.pk}}  
+          name="choise" style="width: 70px; text-align: center;">ОК</button></td>
+  </tr>
+
+{% endfor %}
+
+</table>
+
+{% for s in nlist %}
+
+<table style="width: 100%;">    
+  <thead>
+      <tr>
+          <th style="text-align: center; background-color: #a8e2ff">Закупаем из: {{ s.name }}</th>
+      </tr>
+  </thead>
+</table>
+
+
+
+<!-- Вывожу загловок источника ноенклатуры -->
+<!-- <table class="table table-hover" style="width: 100%;"> -->
+<div>
+
+<table class="etable" style="width: 100%;">
+  
+
+<thead>
+      <tr>
+        <th class="gtable.th" rowspan="2" style="width: 20%; background: #f4fddc;">Продукты</th>
+        <th class="gtable.th" style="width: 80px; background: #f4fddc;">Марта</th>
+        <th class="gtable.th" rowspan="2" style="width: 60px; background: #f4fddc;">Кол.</th>
+        <th class="gtable.th" rowspan="2" style="width: 80px; background: #f4fddc;">Отметка</th>
+      </tr>
+      <tr>
+        <th class="gtable.th" style="width: 80px; background: #f4fddc;">ElGusto</th>
+      </tr>
+</thead>
+
+<!-- Вывожу номенклатуру -->
+{% for n in s.nomen %}
+
+  {% if n.status == 0 %}
+
+      <!-- Строка для выбора (Желтая) -->
+
+      <!-- a href="#NomenDescription" data-bs-toggle="modal" data-bs-target="#NomenDescription"> -->
+
+      <tr id="but_{{n.nomen_id}}" style="background: #f1e3c7;">
+      
+          {% if n.dstatus == 1 %}        
+              <td class="etable.td" rowspan="2" data-bs-toggle="modal" data-bs-target="#NomenDescription" data-bs-whatever="{{n.id}}"
+              data-bs-name="{{n.nomen}}" data-bs-izo="{{n.img}}" data-bs-desc="{{n.opisanie}}" data-bs-cost="{{n.cost}}" data-bs-docs="{{n.docs}}"
+              style="padding-left: 10px; text-align: left; width: 30%; cursor: pointer; color:rgb(247, 2, 124); font-weight:bold; font-size: 14px;" id="nm_{{n.nomen_id}}">{{n.nomen}}, {{n.odin}}</td>
+          {% else %}    
+              <td class="etable.td" rowspan="2" data-bs-toggle="modal" data-bs-target="#NomenDescription" data-bs-whatever="{{n.id}}" id="nm_{{n.nomen_id}}"
+              data-bs-name="{{n.nomen}}" data-bs-izo="{{n.img}}" data-bs-desc="{{n.opisanie}}" data-bs-cost="{{n.cost}}" data-bs-docs="{{n.docs}}"
+              style="padding-left: 10px; text-align: left; width: 30%;cursor: pointer; vertical-align: middle; font-size: 14px;">{{n.nomen}}, {{n.odin}}</td>
+          {% endif %}
+          <td class="etable.td" style="width: 80px; text-align: center;" id="nkm_{{n.nomen_id}}">{{ n.kol_m }}</td>
+          <td class="etable.td" rowspan="2" style="width: 60px; text-align: center; font-weight:bold; vertical-align: middle;" id="nk_{{n.nomen_id}}">{{ n.kol }}</td>
+          <td class="etable.td" rowspan="2" id="tc_{{n.nomen_id}}" style="vertical-align: middle; text-align: center;"><button class="btn btn-outline-secondary" onclick="buttonClick0({{n.nomen_id}}, '{{n.btn}}')"
+            type="button" style="width: 80px; text-align: center;">Взято</button></td>
+      </tr>
+      <tr id="butA_{{n.nomen_id}}" style="background: #f1e3c7;">
+      
+        {% if n.dstatus == 1 %}        
+            <td class="etable.td" data-bs-toggle="modal" data-bs-target="#NomenDescription" data-bs-whatever="{{n.id}}"
+            data-bs-name="{{n.nomen}}" data-bs-izo="{{n.img}}" data-bs-desc="{{n.opisanie}}" data-bs-cost="{{n.cost}}" data-bs-docs="{{n.docs}}"
+            style="width: 80px; cursor: pointer; text-align: center;" id="nke_{{n.nomen_id}}">{{ n.kol_e }}</td>
+        {% else %}    
+            <td class="etable.td" data-bs-toggle="modal" data-bs-target="#NomenDescription" data-bs-whatever="{{n.id}}" id="nke_{{n.nomen_id}}"
+            data-bs-name="{{n.nomen}}" data-bs-izo="{{n.img}}" data-bs-desc="{{n.opisanie}}" data-bs-cost="{{n.cost}}" data-bs-docs="{{n.docs}}"
+            style="width: 80px; cursor: pointer; text-align: center;">{{ n.kol_e }}</td>
+        {% endif %}
+    </tr>
+
+  {% else %}
+
+      <!-- Cтрока для доставки (Синяя) -->
+      <tr id="but_{{n.nomen_id}}" style="background: #cff4fc;">
+      
+          {% if n.dstatus == 1 %}        
+              <td class="etable.td" rowspan="2" data-bs-toggle="modal" data-bs-target="#NomenDescription"  data-bs-whatever="{{n.id}}"
+              data-bs-name="{{n.nomen}}" data-bs-izo="{{n.img}}" data-bs-desc="{{n.opisanie}}" data-bs-cost="{{n.cost}}" data-bs-docs="{{n.docs}}"
+              style="padding-left: 10px; text-align: left; width: 30%; cursor: pointer; color:rgb(247, 2, 124); font-weight:bold;  font-size: 14px;">{{n.nomen}}, {{n.odin}}</td>
+          {% else %}    
+              <td class="etable.td" rowspan="2" data-bs-toggle="modal" data-bs-target="#NomenDescription" data-bs-whatever="{{n.id}}"
+              data-bs-name="{{n.nomen}}" data-bs-izo="{{n.img}}" data-bs-desc="{{n.opisanie}}" data-bs-cost="{{n.cost}}" data-bs-docs="{{n.docs}}"
+              style="padding-left: 10px; text-align: left; width: 30%; cursor: pointer; vertical-align: middle;">{{n.nomen}}, {{n.odin}}</td>
+          {% endif %}
+          <td class="etable.td" style="width: 80px; text-align: center;" id="nkm_{{n.nomen_id}}">{{n.kol_m}}</td>
+          <td class="etable.td" rowspan="2" style="width: 60px; text-align: center; font-weight:bold;  font-size: 14px;" id="nk_{{n.nomen_id}}">{{n.kol}}</td>
+          <td class="etable.td" rowspan="2" style="vertical-align: middle; text-align: center;"><button class="btn btn-outline-secondary" type="button" value={{n.btn}} onclick="buttonClick({{n.nomen_id}}, '{{n.btn}}')"
+            name="choise" style="width: 80px; text-align: center;">Дост.</button></td>
+      </tr>
+      <tr id="butA_{{n.nomen_id}}" style="background: #cff4fc;">
+        <td class="etable.td" style="width: 80px; text-align: center;" id="nke_{{n.nomen_id}}">{{n.kol_e}}</td>
+      </tr>
+
+  {% endif %}
+
+{% endfor %}
+
+</table>
+
+</div>
+
+{% endfor %}
+
+</form>
+
+<div class="modal fade" id="NomenDescription" tabindex="-1" aria-labelledby="NomenModalLabel" aria-hidden="true">
+    <div class="modal-dialog vertical-align-center">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="NomenModalLabel">Nomen Preview:</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+    </div>
+</div>
+
+<script>
+
+const exampleModal = document.getElementById('NomenDescription')
+const modalBody = document.getElementById('modal-body')
+exampleModal.addEventListener('show.bs.modal', event => {
+
+// Icon that triggered the modal
+const button = event.relatedTarget
+// Extract info from data-bs-* attributes
+const recipient = button.getAttribute('data-bs-whatever')
+const nomenname = button.getAttribute('data-bs-name')
+const desc = button.getAttribute('data-bs-desc')
+const izo = button.getAttribute('data-bs-izo')
+const cost = button.getAttribute('data-bs-cost')
+const docs = button.getAttribute('data-bs-docs')
+const modalTitle = exampleModal.querySelector('.modal-title')
+modalTitle.textContent = `${nomenname}`
+
+var ht=`Лучшая цена: <span style="color: rgb(21, 90, 240); font-size: 18px; font-weight: bold;">${cost} р.</span>`;
+    if (desc != '') {
+      ht += `<p>Описание: ${desc}</p>`;
+    }
+
+    if (izo != '') {
+      ht += `<img src=/${izo} height="350" width="350">`;
+    }
+
+    if (docs != ''){
+      var r = `<div><i style="font-weight: bold;">Заказы:</i><br>`;
+
+      r += docs;
+      r += `</div>`;
+
+      ht += r;
+    }
+
+modalBody.innerHTML = ht;
+    
+})
+
+async function req (ur) {
+
+    let url = ur;
+    console.log(url);
+
+    let response = await fetch(url, {referrerPolicy: "origin"});    
+}
+
+const buttonClick = (b_id, b_data) => {
+
+const butDiv = document.getElementById('but_'+b_id);           
+const butDivA = document.getElementById('butA_'+b_id);           
+    
+// теперь надо из таблицы django убрать запись, вызываем marktask
+let url = "/selexezakazhim/" + b_data + "/";
+
+console.log(url);
+    
+req(url)
+    
+butDiv.parentNode.removeChild(butDiv);
+butDivA.parentNode.removeChild(butDivA);
+
+}
+
+const buttonClick0 = (b_id, b_data) => {
+
+const butDiv = document.getElementById('tc_'+b_id);
+const rowDiv = document.getElementById('but_'+b_id);
+const nmDiv = document.getElementById('nm_'+b_id);
+const nkeDiv = document.getElementById('nke_'+b_id);
+const nkmDiv = document.getElementById('nkm_'+b_id);
+const nkDiv = document.getElementById('nk_'+b_id);
+
+// Нужно поменять кнопку и цвет фона строки
+butDiv.innerHTML =`
+<td><button class="btn btn-outline-secondary" onclick="buttonClick(${b_id}, '${b_data}')"
+            type="button" style="width: 70px; text-align: center;">Дост</button></td>
+`;
+
+butDiv.style.background = "#cff4fc";
+nmDiv.style.background = "#cff4fc";
+nkeDiv.style.background = "#cff4fc";
+nkmDiv.style.background = "#cff4fc";
+nkDiv.style.background = "#cff4fc";
+
+//rowDiv.style.backgroundColor = "#cff4fc";
+//rowDiv.className = "table-info table-hover"
+//rowDiv.innerHTML=`<tr><td> </td></tr>`; !!!!!!!!!! Работает !!!!!!!
+//rowDiv.classList.toggle("table-info table-hover")
+
+//butDiv.parentNode.removeChild(butDiv);
+    
+// теперь надо изменить статус
+let url = "/selexezakazhim/" + b_data + "/";
+console.log(url);    
+req(url)    
+
+}
+
+</script>
+
+
+{% endblock %}

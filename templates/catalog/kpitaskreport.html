@@ -1,0 +1,110 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+{% load static %}
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<form action="{% url 'KPITaskReport' %}" method="post">
+    {% csrf_token %}
+    
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th style="width: 80px; text-align: center; vertical-align: middle;">
+                    <div>
+                        <label for="id_b_date">Нач. дата: </label>
+                        <input id="id_b_date" type="date" value={{bdate}} required id="" name="d_date1">
+                    </div>
+
+                </th>                
+                <th style="width: 80px; text-align: center; vertical-align: middle;">
+                    <div>
+                        <label for="id_b_date">Кон. дата: </label>
+                        <input id="id_b_date" type="date" value={{edate}} required id="" name="d_date2">
+                    </div>
+                </th>
+        </tr>
+        </thead>
+    </table>
+
+    <div class="d-grid gap-2 col-6 mx-auto">
+        <button class="btn btn-primary" type="submit">Обновить</button>
+    </div>                        
+
+{{ form.as_p }}
+
+<p></p>
+
+<table class="table table-hover">
+    
+    <tbody class="table-warning table-hover">
+
+    <tr class="table-warning table-hover">
+            <td style="width: 60%; height: 24px; text-align: center; font-size: 14px; background-color: rgb(247, 238, 157); 
+              font-weight: bold;">Информация по отмеченным заданиям:</td>
+              <td style="width: 30%; height: 24px; text-align: center; font-size: 14px; background-color: rgb(247, 238, 157); 
+              font-weight: bold;">{{r_count}}</td>
+    </tr>
+  
+
+    {% for d in smas %}
+
+        <tr class="table-warning table-hover">
+            <td style="width: 60%; height: 16px; text-align: center; font-size: 14px; background-color: rgb(249, 252, 208); 
+            font-weight: bold;">{{d.sotr.name}}</td>
+            <td style="width: 30%; height: 16px; text-align: center; font-size: 14px; background-color: rgb(249, 252, 208);
+            font-weight: bold;">{{d.count}}</td>
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+
+</table> 
+
+<table class="table table-hover">
+    
+    <tbody class="table-warning table-hover">
+
+    <tr class="table-warning table-hover">
+        <td style="width: 60%; height: 24px; text-align: center; font-size: 14px; background-color: rgb(247, 157, 212); 
+          font-weight: bold;">Информация по контролю:</td>
+          <td style="width: 30%; height: 24px; text-align: center; font-size: 14px; background-color: rgb(247, 157, 212);
+          font-weight: bold;">{{c_count}}</td>
+    </tr>
+
+    {% for d in cmas %}
+
+        <tr class="table-warning table-hover">
+            <td style="width: 60%; height: 16px; text-align: center; font-size: 14px; background-color: rgb(235, 203, 250); 
+            font-weight: bold;">{{d.sotr.name}}</td>
+            <td style="width: 30%; height: 16px; text-align: center; font-size: 14px; background-color: rgb(235, 203, 250);
+            font-weight: bold;">{{d.count}}</td>
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+
+</table> 
+
+</form>
+
+{% endblock %}

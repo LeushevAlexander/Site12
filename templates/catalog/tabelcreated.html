@@ -1,0 +1,76 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+{% csrf_token %}
+
+<div style="font-size: 16px; font-weight: bold; color: #0c0c9c; padding-left: 20px;">
+    Создан табель на дату: {{date_tabel}}
+</div>
+<div style="font-size: 16px; font-weight: bold; color: #0c0c9c; padding-left: 20px;">
+    Автор: {{user.username}}
+</div>
+<div style="font-size: 16px; font-weight: bold; color: #0c0c9c; padding-left: 20px;">
+    Объект производства: {{obj}}
+</div>
+<div style="font-size: 16px; font-weight: bold; color: #0c0c9c; padding-left: 20px;">
+    Объект подразделение: {{div}} <p></p>
+</div>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Сотрудники в табеле</th>
+            <th style="width: 25px; text-align: center;";>t'Прих.</th>
+            <th style="width: 25px; text-align: center;";>t'Уход.</th>
+            <th style="width: 20px; text-align: center;";>Ед.</th>
+            <th style="width: 80px; text-align: center;";>Кол.</th>
+        </tr>
+    </thead>
+    
+    <tbody class="table-warning table-hover">
+
+
+    {% for n in slist %}
+
+    <tr class="table-warning table-hover">
+
+        {% if n.f == 1 %}
+            <td>{{ n.sotr.name }}</td>
+            <td style="width: 25px; text-align: center;";>{{ n.t1 }}</td>
+            <td style="width: 25px; text-align: center;";>{{ n.t2 }}</td>
+            <td style="width: 20px; text-align: center;";>{{ n.sotr.ei.name }}</td>
+            <td style="width: 20px; text-align: center;";>{{ n.kol }}</td>
+        {% else %}
+            <td style="color: brown; text-decoration: line-through;">{{ n.sotr.name }}</td>
+            <td style="color: brown; text-decoration: line-through; width: 25px; text-align: center;";>{{ n.t1 }}</td>
+            <td style="color: brown; text-decoration: line-through; width: 25px; text-align: center;";>{{ n.t2 }}</td>
+            <td style="color: brown; text-decoration: line-through; width: 20px; text-align: center;";>{{ n.sotr.ei.name }}</td>
+            <td style="color: brown; text-decoration: line-through; width: 20px; text-align: center;";>{{ n.kol }}</td>
+        {% endif%}
+    </tr>
+
+    {% endfor %}
+
+    </tbody>
+</table>
+
+{% endblock %}
+

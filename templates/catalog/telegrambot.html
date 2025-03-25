@@ -1,0 +1,13 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+<h1>{{title}}</h1>
+
+<form action="{% url 'Bot' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Выполнить</button>
+</form>
+
+{% endblock %}
+

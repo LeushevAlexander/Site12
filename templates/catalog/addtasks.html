@@ -1,0 +1,17 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+<div class="mb-3">
+
+<h1>{{title}}</h1>
+
+<form action="{% url 'AddTasks' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Добавить задания</button>
+</form>
+
+</div>
+
+{% endblock %}
+

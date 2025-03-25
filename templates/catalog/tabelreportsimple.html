@@ -1,0 +1,152 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<form action="{% url 'TabelReportSimple' %}" method="post">
+    {% csrf_token %}
+    
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th style="width: 80px; text-align: center; vertical-align: top;">
+                    <div>
+                        <label for="id_b_date">Период с: </label>
+                        <input id="id_b_date" type="date" value={{begindate}} required id="" name="b_date">
+
+                        <p> </p>
+
+                        <label for="id_e_date"> по: </label>
+                        <input id="id_e_date" type="date" value={{enddate}} required id="" name="e_date">
+
+                        <p> </p>
+
+                        <div class="d-grid gap-2 col-6 mx-auto">
+                            <button class="btn btn-primary" type="submit">Обновить</button>
+                        </div>                        
+                    </div>
+                </th>
+            </tr>
+        </thead>
+    </table>
+
+{{ form.as_p }}
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th style="width: 250px; text-align: center;">Сотрудники</th>
+            <th style="width: 80px; text-align: center;";>Кол.</th>
+        </tr>
+    </thead>
+    
+    <tbody class="table-warning table-hover">
+
+    {% if akol > 0 %}
+        <tr class="table-warning table-hover">
+            <td style="width: 80px; text-align: left; background-color: rgb(111, 1, 1); 
+            font-weight: bold; color: beige;">Итог: </td>
+            <td style="width: 80px; text-align: right; background-color: rgb(111, 1, 1); 
+            font-weight: bold; color: beige;">{{akol}} ({{asm}})</td>
+        </tr>
+    {% endif %}
+        
+
+{% for d in divis %}
+
+<tr class="table-warning table-hover">
+    <td style="width: 80px; text-align: left; background-color: aquamarine; font-weight: bold;">{{d.divis.name}}</td>
+    <td style="width: 80px; text-align: right; background-color: aquamarine; font-weight: bold;">{{d.kol}} ({{d.sm}})</td>
+</tr>
+
+{% for r in rep %}
+    {% if r.div == d.divis.pk %}
+    <tr class="table-warning table-hover">
+        <td data-bs-toggle="modal" data-bs-target="#TabelDescription" data-bs-whatever="{{n.id}}"
+        data-bs-name="{{r.sotr__name}}" data-bs-docs="{{r.docs}}" data-bs-bdate="{{begindate}}" data-bs-edate="{{enddate}}"
+        style="width: 80px; text-align: left; cursor: pointer;">{{r.sotr__name}}</td>
+        <td style="width: 80px; text-align: right;">{{r.kol__sum}} ({{r.id__count}})</td>
+    </tr>
+    {% endif %}
+
+{% endfor %}
+{% endfor %}
+
+    </tbody>
+
+</table> 
+
+</form>
+
+<div class="modal fade" id="TabelDescription" tabindex="-1" aria-labelledby="TabelModalLabel" aria-hidden="true">
+    <div class="modal-dialog vertical-align-center">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="TabelModalLabel">Tabel Preview:</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+    </div>
+</div>
+
+<script>
+
+const exampleModal = document.getElementById('TabelDescription')
+const modalBody = document.getElementById('modal-body')
+exampleModal.addEventListener('show.bs.modal', event => {
+
+// Icon that triggered the modal
+const button = event.relatedTarget
+// Extract info from data-bs-* attributes
+const recipient = button.getAttribute('data-bs-whatever')
+const tabelname = button.getAttribute('data-bs-name')
+const bdate = button.getAttribute('data-bs-bdate')
+const edate = button.getAttribute('data-bs-edate')
+const docs = button.getAttribute('data-bs-docs')
+const modalTitle = exampleModal.querySelector('.modal-title')
+modalTitle.textContent = `${tabelname}`
+
+var ht=`<div style="text-align: center;">
+    Период с: <span style="color: rgb(21, 90, 240); font-size: 14px; font-weight: bold;">${bdate}</span> по: <span style="color: rgb(21, 90, 240); font-size: 14px; font-weight: bold;">${edate}</span>
+    <br></br>
+    </div>`;
+
+    if (docs != ''){
+      var r = `<div><i style="font-weight: bold;">Записи по табелю:</i><br>`;
+
+      r += docs;
+      r += `</div>`;
+
+      ht += r;
+    }
+
+modalBody.innerHTML = ht;
+    
+})
+
+</script>  
+
+{% endblock %}

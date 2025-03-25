@@ -1,0 +1,212 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<form action="{% url 'AddGraphic' %}" method="post">
+    {% csrf_token %}
+    
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    <div style="text-align: right; vertical-align: top;">
+                        <label for="id_g_date">Дата в графике:</label>
+                        <input id="id_g_date" type="date" value={{gdate}} required id="" name="g_date">
+                    </div>        
+                </th>
+                <th style="vertical-align: top; text-align: right; width: 40%;">
+                        <button type="submit" class="btn btn-primary" value="create" name="choise">Добавить в график</button>
+                </th>
+            </tr>
+            <tr>            
+                <th style="width: 100px; text-align: center; vertical-align: top;">
+                    <label for="id_zakaz_receiver">Объект:</label>
+                    <select id="ei_zakaz_receiver" class="form-select" name="cg_object" style="width: 200px; vertical-align: middle">
+                        {%for e in cobjlist%}
+                            {% if e.id != cobjset.id %}
+                                <option value={{e.id}}>{{e.name}}</option> 
+                            {% else %}    
+                                <option value={{e.id}} selected={{e.id}}>{{e.name}}</option> 
+                            {% endif%}
+                        {% endfor %}
+                    </select>
+                    <div>
+                        <p></p>
+                    </div>
+                </th>
+
+                <th style="width: 100px; text-align: center; vertical-align: top;">
+                    <label for="id_div">Подразделение:</label>
+                    <select id="id_div" class="form-select" name="cdiv_object" style="width: 200px; vertical-align: middle">
+                        {%for e in cdivlist%}
+                            {% if e.id != cdivset.id %}
+                                <option value={{e.id}}>{{e.name}}</option> 
+                            {% else %}    
+                                <option value={{e.id}} selected={{e.id}}>{{e.name}}</option> 
+                            {% endif%}
+                        {% endfor %}
+                    </select>
+                </th>
+            </tr>
+            <tr>            
+                <th style="width: 100px; text-align: center; vertical-align: top; background-color: bisque;">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Строка фильтра..." 
+                        aria-label="Строка поиска..." value="{{mstr}}" name="searchstring">
+                        <button class="btn btn-outline-secondary" type="submit" value="search" name="choise">Фильтр</button>
+                    </div>                      
+                </th>
+                <th style="width: 100px; text-align: center; vertical-align: top; background-color: bisque; ">
+                </th>
+            </tr>
+            </thead>
+    </table>
+
+{{ form.as_p }}
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th style="width: 120px; text-align: center;">Сотрудники</th>
+            <th style="width: 140px; text-align: center;">Позиция</th>
+            <th style="width: 70px; text-align: center;">t' In/Out</th>
+            <th style="width: 60px; text-align: center;";>Кол.</th>
+        </tr>
+    </thead>
+    
+    <tbody class="table-warning table-hover">
+
+    {% for n in slist %}
+
+    <tr class="table-warning table-hover">
+        <td style="vertical-align: middle;">{{ n.name }}</td>
+        <td style="width: 140px; text-align: center; vertical-align: middle;">
+            <select id="pos_id" class="form-select" name='pos_{{n.id}}' style="width: 140px; text-align: center;">
+                {%for e in plist%}
+                	<option value={{e.id}}>{{e.name}}</option> 
+                {% endfor %}
+            </select>
+        </td>
+        <td style="width: 70px; text-align: center;">
+            <div class="mb-3" style="width: 100px;">                
+                <input type="time" class="form-control" onchange="timeChange({{n.id}})" name='sotr_t1{{n.id}}' id=t1_{{n.id}} value="09:00">
+            </div>            
+            <div class="mb-3" style="width: 100px;">                
+                <input type="time" class="form-control" onchange="timeChange({{n.id}})" name='sotr_t2{{n.id}}' id=t2_{{n.id}} value="09:00">
+            </div>            
+        </td>
+        <td style="width: 60px; text-align: center; vertical-align: middle;">
+            <div class="mb-3" style="width: 70px;"> 
+                <input type="text" class="form-control" name='sotr{{n.id}}' id=ch_{{n.id}} readonly>
+            </div>            
+        </td>
+    </tr>
+
+    {% endfor %}
+
+    </tbody>
+</table>
+
+</form>
+
+<!-- <--Modal  Окно работает, самое простое, можно делать  -->
+<div class="modal fade" id="NomenDescription" tabindex="-1" aria-labelledby="NomenModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="NomenModalLabel">Nomen Preview:</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+
+// Подсчитываю количество времени
+
+const timeChange = (n_id) => {
+
+const t1Div = document.getElementById('t1_'+n_id).value;           
+const t2Div = document.getElementById('t2_'+n_id).value;    
+const kDiv = document.getElementById('ch_'+n_id);    
+
+  // console.log('t1_'+n_id);
+// console.log(t1Div);
+
+let t1 = t1Div.substr(0, 2);
+let t2 = t1Div.substr(3, 2);
+
+// текущая дата
+var dt = new Date();
+
+var date1 = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), Number(t1), Number(t2)); 
+
+t1 = t2Div.substr(0, 2);
+t2 = t2Div.substr(3, 2);
+
+var date2 = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), Number(t1), Number(t2)); 
+
+console.log(dt);
+console.log(date1);
+console.log(date2);
+// alert(String(date1) + String(date2));
+
+let firstDate = t1Div;
+let secondDate = t2Div;
+let getDate = (string) => new Date(0, 0,0, string.split(':')[0], string.split(':')[1]);
+let different = (getDate(secondDate) - getDate(firstDate));
+let differentRes, hours, minuts;
+
+//alert(different);
+
+if(different > 0) {
+    differentRes = different;
+    hours = Math.floor((differentRes % 86400000) / 3600000);
+    //minuts = Math.round(((differentRes % 86400000) % 3600000) / 60000);
+
+    minuts = Math.round(((differentRes % 86400000) % 3600000) / 60000);
+    minuts = Math.round(minuts / 60 * 10) / 10;
+    hours = hours + minuts;
+
+
+} else {
+        differentRes = Math.abs((getDate(firstDate) - getDate(secondDate)));
+        hours = Math.floor(24 - (differentRes % 86400000) / 3600000) - 1;
+        minuts = Math.round(60 - ((differentRes % 86400000) % 3600000) / 60000);
+
+        minuts = Math.round(minuts / 60 * 10) / 10;
+        hours = hours + minuts;
+    }
+
+// let result = hours + ':' + minuts;
+let result = hours;
+
+kDiv.value = String(result);
+
+}
+</script>
+
+{% endblock %}

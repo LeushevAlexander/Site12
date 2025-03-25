@@ -1,0 +1,194 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<form action="{% url 'AddStopList' %}" method="post" id="MyForm">
+
+    {% csrf_token %}
+    
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th style="width: 100px; text-align: center; vertical-align: top;">
+                    <div>
+                        <label for="id_sl_date">Дата записи:</label>
+                        <input id="id_sl_date" type="date" value={{date_stoplist}} required id="" name="sl_date" style="width: 80;">
+                    </div>
+                </th>
+                <th style="width: 100px; text-align: center; vertical-align: top;">
+                    <label for="id_zakaz_receiver">Объект:</label>
+                    <select id="ei_zakaz_receiver" class="form-select" name="stl_object" style="width: 140px; vertical-align: middle" onchange="ChangeObj()">
+                        {%for e in objlist%}
+                            {% if e != objset %}
+                                <option value={{e.id}}>{{e.name}}</option> 
+                            {% else %}    
+                                <option value={{e.id}} selected={{e.id}}>{{e.name}}</option> 
+                            {% endif%}
+                        {% endfor %}
+                    </select>
+                </th>
+            </tr>
+        <tr>
+            <th style="width: 100px; text-align: center; vertical-align: top;">
+                <label for="id_cause">Причина:</label>
+                <select id="id_cause" class="form-select" name="cause_object" style="width: 170px; vertical-align: middle">
+                    {%for e in clist%}
+                        {% if e != causeset %}
+                            <option value={{e.id}}>{{e.name}}</option> 
+                        {% else %}    
+                            <option value={{e.id}} selected={{e.id}}>{{e.name}}</option> 
+                        {% endif%}
+                    {% endfor %}
+                </select>
+            </th>
+            <th style="width: 100px; text-align: center; vertical-align: top;">
+                <label for="remark">Комментарий:</label>
+                <div class="mb-3" style="width: 140px;">                
+                    <input type="text" class="form-control" name='remark' id='remark' placeholder="" value={{rem}}>
+                </div>            
+            </th>
+        </tr>
+            <tr>
+                <th style="width: 100px;">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Строка фильтра..." 
+                        aria-label="Строка поиска..." value="{{mstr}}" name="searchstring" style="width: 80px;">
+                        <button class="btn btn-outline-secondary" type="submit" value="search" name="choise" id="ButtonFilter" style="width: 75px;">Фильтр</button>
+                      </div>                      
+                </th>
+                <th style="vertical-align: top; text-align: center; width: 100px;">
+                    <button type="submit" class="btn btn-primary" value="create" name="choise">Создать STOP</button>
+                </th>
+            </tr>
+        </thead>
+    </table>
+
+{{ form.as_p }}
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th style="width: 60px; text-align: center;">Отм.</th>
+            <th style="text-align: center;">Блюда</th>
+            <th style="text-align: center;">Остаток</th>
+        </tr>
+    </thead>
+    
+    <tbody class="table-warning table-hover">
+
+    {% for n in mlist %}
+
+    <tr class="table-warning table-hover">
+        <td style="text-align: center;"><div class="form-check" style="padding-left: 40px;">
+            <input class="form-check-input" type="checkbox" value="" name='nomen{{n.id}}' id=nomen{{n.id}}>
+          </div></td>
+        <td>{{ n.name }}</td>
+        <td style="width: 80px; text-align: center;">
+            <div class="mb-3" style="width: 80px;">                
+                <input type="number" step="any" class="form-control" name='ost{{n.id}}' id=ost{{n.id}}>
+            </div>            
+        </td>
+    </tr>
+
+    {% endfor %}
+
+    </tbody>
+</table>
+
+</form>
+
+<!-- <--Modal  Окно работает, самое простое, можно делать  -->
+<div class="modal fade" id="NomenDescription" tabindex="-1" aria-labelledby="NomenModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="NomenModalLabel">Nomen Preview:</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+    const exampleModal = document.getElementById('NomenDescription')
+    const modalBody = document.getElementById('modal-body')
+    exampleModal.addEventListener('show.bs.modal', event => {
+    
+    // Icon that triggered the modal
+    const button = event.relatedTarget
+    // Extract info from data-bs-* attributes
+    const recipient = button.getAttribute('data-bs-whatever')
+    const nomenname = button.getAttribute('data-bs-name')
+    const desc = button.getAttribute('data-bs-desc')
+    const izo = button.getAttribute('data-bs-izo')
+    const cost = button.getAttribute('data-bs-cost')
+    // If necessary, you could initiate an AJAX request here
+    // and then do the updating in a callback.
+    //
+    // Update the modal's content.
+    const modalTitle = exampleModal.querySelector('.modal-title')
+    //const modalBodyInput = exampleModal.querySelector('.modal-body input')
+    // const modalBodyName = exampleModal.querySelector('.modal-body NomenName')
+    // const modalBodyDescription = exampleModal.querySelector('.N_Description')    
+    //const nomen = exampleModal.querySelector('.modal-body N-Description')
+
+    //modalTitle.textContent = `Окно товара: ${nomenname}`
+    modalTitle.textContent = "Информация о продукте"
+
+    // modalBodyInput.value = recipient
+    //modalBodyInput.value = `${recipient}`
+    //modalBodyName.value = nomenname
+    //n_descript.innerHTML = `<div class="N-Description" id="N-Description"><h1>ВОТ ОПИСАНИЕ !!!</h1></div>`
+    //nomen.textContent = `ОПИСАНИЕ ТОВАРА!!!`  
+    //modalBody.textContent = `kjhsdfkjasasdhflkasjdhf`
+
+    // Сдесь я сам делаю HTML для отображения информации по товару
+    if (izo != '') {
+        modalBody.innerHTML = `<div>
+            <h1>Лучшая цена: ${cost} р.</h1>
+            <p>Описание: ${desc}</p>        
+            <img src=/${izo} height="350" width="350"> 
+            </div>
+            `;
+        }    
+    else {
+        modalBody.innerHTML = `<div>
+            <h1>Лучшая цена: ${cost} р.</h1>
+            <p>Описание: ${desc}</p>        
+            </div>
+            `;
+    }    
+})
+
+const ChangeObj = () => {
+
+    const But = document.getElementById('ButtonFilter');           
+    console.log('Обновление списка....');
+    But.click()
+}
+
+</script>
+
+{% endblock %}

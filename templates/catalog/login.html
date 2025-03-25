@@ -1,0 +1,30 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+
+    <!-- <div class="input-group input-group-sm mb-3" style="width: 80%; margin: 0 auto;"> -->
+    <div class="input-group input-group-sm mb-3" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30%; margin: 0 auto;">
+        <!-- <div style="text-align: center; width: 70%; font-size: 18px; font-weight: bold;">{{title}}</div>
+        <div><p></p></div> -->
+    <form method="post">
+        {% csrf_token %}  
+        
+            <span class="input-group-text" id="inputGroup-sizing-default" for="">Логин:</span>
+            <input type="text" class="form-control" name="username" required id="id_username" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+        
+            <p></p>
+
+            <span class="input-group-text" id="inputGroup-sizing-default">Пароль:</span>
+            <input type="password" class="form-control" name="password" required id="id_password" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+
+        <p></p>
+        <p></p>
+
+        <div class="d-grid gap-2 col-6 mx-auto">
+            <button class="btn btn-primary" type="submit" style="width: 100%;">Войти</button>
+        </div>
+        <!-- {{form.as_p}} -->
+
+        </form>
+    </div>
+{% endblock %}
+

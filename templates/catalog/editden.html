@@ -1,0 +1,165 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<form action="{% url 'EditDen' %}" method="post">
+    {% csrf_token %}
+    
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th style="width: 80px; text-align: center; vertical-align: top;">
+                    <div>
+                        <label for="id_den_date">Дата рабочего дня:</label>
+                        <input id="id_den_date" type="date" value={{date_den}} required id="" name="den_date">                    
+                    </div>
+                    <div style="padding-top: 10px;">
+                        <button type="submit" class="btn btn-primary" value="fill" name="choise">Заполнить</button>
+                    </div>
+                </th>
+                <th style="width: 100px; text-align: center; vertical-align: top;">
+                    <label for="id_obj">Объект реализации:</label>
+                    <div style="padding-top: 18px; text-align: center;">
+                    <select id="ei_obj" class="form-select" name="obj" style="width: 200px; vertical-align: middle">
+                        {%for e in rlist%}
+                            {% if e != editdata.obj %}
+                                <option value={{e.id}}>{{e.name}}</option> 
+                            {% else %}    
+                                <option value={{e.id}} selected={{e.id}}>{{e.name}}</option> 
+                            {% endif%}
+                        {% endfor %}
+                    </select>
+                    </div>
+                </th>
+            </tr>
+            <tr><th style="width: 50%;">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Выручка нал.</span>
+                        <input type="text" class="form-control" name="vnal" value={{editdata.vnal}}>
+                        <span class="input-group-text">р.</span>
+                    </div>
+                </th>                
+                <th style="width: 50%;">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Выручка б/нал.</span>
+                        <input type="text" class="form-control" name="vbnal" value={{editdata.vbnal}}>
+                        <span class="input-group-text">р.</span>
+                    </div>
+                </th>    
+            </tr>
+            <tr><th style="width: 50%;">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Оплата БС.</span>
+                    <input type="text" class="form-control" name="vbs" value={{editdata.vbs}}>
+                    <span class="input-group-text">р.</span>
+                </div>
+            </th>                
+            <th style="width: 50%;">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Оплата ПП.</span>
+                    <input type="text" class="form-control" name="vpp" value={{editdata.vpp}}>
+                    <span class="input-group-text">р.</span>
+                </div>
+            </th>    
+            </tr>
+            <tr><th style="width: 50%;">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Оплата Пр.</span>
+                    <input type="text" class="form-control" name="vpr" value={{editdata.vpr}}>
+                    <span class="input-group-text">р.</span>
+                </div>
+            </th>                
+            <th style="width: 50%;">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Оплата Сер.</span>
+                    <input type="text" class="form-control" name="vsert" value={{editdata.vsert}}>
+                    <span class="input-group-text">р.</span>
+                </div>
+            </th>     
+            </tr>
+            <tr><th style="width: 50%;">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Выручка Бар.</span>
+                    <input type="text" class="form-control" name="vbar" value={{editdata.vbar}}>
+                    <span class="input-group-text">р.</span>
+                </div>
+            </th>                
+            <th style="width: 50%;">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Выручка Кух.</span>
+                    <input type="text" class="form-control" name="vkuh" value={{editdata.vkuh}}>
+                    <span class="input-group-text">р.</span>
+                </div>
+            </th>    
+            </tr>
+            <tr><th style="width: 50%;">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Чай нал.</span>
+                    <input type="text" class="form-control" name="chn" value={{editdata.chn}}>
+                    <span class="input-group-text">р.</span>
+                </div>
+            </th>                
+            <th style="width: 50%;">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Чай б/нал.</span>
+                    <input type="text" class="form-control" name="chbn" value={{editdata.chbn}}>
+                    <span class="input-group-text">р.</span>
+                </div>
+            </th>    
+            </tr>
+            <tr><th style="width: 50%;">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Кол. гостей</span>
+                    <input type="text" class="form-control" name="kolg" value={{editdata.kolg}}>
+                    <span class="input-group-text">чел.</span>
+                </div>
+            </th>   
+            <th style="vertical-align: center; text-align: center;">
+                <button type="submit" class="btn btn-primary" value="edit" name="choise">Изменить день</button>
+            </th>
+        </tr>
+        </tr>
+        <!-- <tr><th style="width: 50%;">
+            <div class="input-group mb-3">
+                <span class="input-group-text">Кол.блюд</span>
+                <input type="text" class="form-control" name="kolblud">
+                <span class="input-group-text">Шт.</span>
+            </div>
+        </th>                
+        <th style="width: 50%;">
+            <div class="input-group mb-3">
+                <span class="input-group-text">Вес блюд</span>
+                <input type="text" class="form-control" name="masblud">
+                <span class="input-group-text">Кг.</span>
+            </div>
+        </th>    
+        </tr> -->
+        <!--<tr>
+                <th style="vertical-align: top; text-align: right; width: 40%;">
+                    <button type="submit" class="btn btn-primary" value="edit" name="choise">Изменить день</button>
+                </th>
+        </tr> -->
+        </thead>
+    </table>
+
+{{ form.as_p }}
+</form>
+
+{% endblock %}

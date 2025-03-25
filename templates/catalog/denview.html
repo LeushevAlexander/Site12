@@ -1,0 +1,1148 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+{% load static %}
+
+<link type="text/css" href="{% static 'catalog/css/btable.css' %}" rel="stylesheet"/>
+
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<form action="{% url 'DenView' %}" method="post">
+
+    {% csrf_token %}
+    
+    <div class="Dt" style="padding-bottom: 10px; padding-left: 15px; display: inline-block;">
+        <div class="input-group mb-3" style="width: 660px;">
+            <span class="input-group-text" id="basic-addon1">Начальная дата:</span>
+            <input id="d_date1" type="date" style="width: 150px;" class="form-control" aria-describedby="basic-addon1" value={{bdate}} required name="d_date1">
+            <div style="width: 50px;">    </div>
+            <span class="input-group-text" id="basic-addon1">Конечная дата:</span>
+            <input id="d_date2" type="date" style="width: 150px;" class="form-control" aria-describedby="basic-addon1" value={{edate}} required name="d_date2">
+        </div>                        
+
+        <!-- <div class="input-group mb-3" style="width: 330px;">
+            <span class="input-group-text" id="basic-addon1">Конечная дата:</span>
+            <input id="d_date2" type="date" style="width: 150px;" class="form-control" aria-describedby="basic-addon1" value={{edate}} required name="d_date2">
+        </div>                         -->
+    </div>
+
+    <div class="But" style="padding-bottom: 20px;">
+
+        <div style="cursor: pointer; padding-left: 40px; display: inline-block; padding-left: 40px;" 
+            data-bs-toggle="modal" data-bs-target="#AddQuestion" data-bs-date="{{tdate}}" data-bs-objpos="1">
+            <img width="60px" height="60px" src="{% static 'catalog/images/addbanket.png'%}"> 
+        </div>   
+
+        <div style="padding-left: 30px;  display: inline-block;">
+            <button class="btn btn-primary" type="submit" name="ReloadButton" style="width: 150px;  display: inline-block;">Обновить</button>
+        </div>
+
+    </div>
+
+    {{ form.as_p }}
+
+    <div class="container">
+        <table class="gtable" style="table-layout: fixed;">
+        <thead class="gtable.th">
+            <tr>
+
+                <th class="gtable.th" style="background-color: rgb(165, 229, 208); font-size: 14px; font-weight: bold; width: 110px;">
+                    Дата
+                    
+                </th>
+
+                <th class="gtable.th" style="background-color: rgb(165, 229, 208); font-size: 14px; font-weight: bold; width: 70px;">
+                    Объект
+                </th>
+
+                <th class="gtable.th" style="background-color:rgb(165, 229, 208); font-size: 14px; font-weight: bold; width: 70px;">
+                    Сумма нал.
+                </th>
+
+                <th class="gtable.th" style="background-color:rgb(165, 229, 208); font-size: 14px; font-weight: bold; width: 70px;">
+                    Сумма Б/нал.
+                </th>
+
+                <th class="gtable.th" style="background-color:rgb(165, 229, 208); font-size: 14px; font-weight: bold; width: 70px;">
+                    Сумма Итог
+                </th>
+
+                <th class="gtable.th" style="background-color:rgb(165, 229, 208); font-size: 14px; font-weight: bold; width: 70px;">
+                    Автор
+                </th>
+
+            </tr>
+        </thead>
+        
+        <tbody>
+
+            {% for i in dmas %}
+
+                <tr>
+                    <td class="gtable.td" style="font-size: large;">
+                        {{i.record.date}}
+
+                        <div style="cursor: pointer; display: inline-block;"
+                            data-bs-toggle="modal" data-bs-target="#EditQuestion" data-bs-whatever="{{i.record.pk}}" 
+                            data-bs-dt="{{i.dt}}" data-bs-vnal="{{i.vnal}}" data-bs-vbnal="{{i.vbnal}}"
+                            data-bs-vbs="{{i.vbs}}" data-bs-vpp="{{i.vpp}}" data-bs-vpr="{{i.vpr}}"
+                            data-bs-vsr="{{i.vsert}}" data-bs-chnal="{{i.chnal}}" data-bs-chbnal="{{i.chbnal}}"
+                            data-bs-vbar="{{i.vbar}}" data-bs-vkuh="{{i.vkuh}}" data-bs-kolg="{{i.kolg}}" 
+                            data-bs-objpos="{{i.record.obj.pk}}"
+                            data-bs-gorv="{{i.gorv}}" data-bs-gork="{{i.gork}}"
+                            data-bs-holv="{{i.holv}}" data-bs-holk="{{i.holk}}"
+                            data-bs-pizv="{{i.pizv}}" data-bs-pizk="{{i.pizk}}"
+                            data-bs-desv="{{i.desv}}" data-bs-desk="{{i.desk}}"
+                            data-bs-alkv="{{i.alkv}}" data-bs-alkk="{{i.alkk}}"
+                            data-bs-kofv="{{i.kofv}}" data-bs-kofk="{{i.kofk}}">
+                            <img width="35px" height="35px" src="{% static 'catalog/images/EditIcon.jpg'%}"> 
+                        </div>
+                        <div style="cursor: pointer; display: inline-block;" 
+                            data-bs-toggle="modal" data-bs-target="#DelQuestion" data-bs-whatever="{{i.record.pk}}" 
+                            data-bs-vsego="{{i.vsego}}" data-bs-objname="{{i.record.obj.name}}" data-bs-dt="{{i.record.date}}">
+                            <img width="35px" height="35px" src="{% static 'catalog/images/DelIcon.png'%}">
+                        </div>
+
+                    </td>
+
+                    <td class="gtable.td">
+                        <div style="cursor: pointer;">
+                            {{i.record.obj.name}}
+                        </div>
+                    </td>
+
+                    <td class="gtable.td">
+                        <div style="cursor: pointer;">
+                            {{i.vnal1}}
+                        </div>
+                    </td>
+
+                    <td class="gtable.td">
+                        <div style="cursor: pointer;">
+                            {{i.vbnal1}}
+                        </div>
+                    </td>
+
+                    <td class="gtable.td">
+                        <div style="cursor: pointer;">
+                            {{i.vsego}}
+                        </div>
+                    </td>
+
+                    <td class="gtable.td">
+                        <div style="cursor: pointer;">
+                            {{i.autor}}
+                        </div>
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+        </tbody>
+        </table>
+    </div>
+
+</form>
+
+<div class="modal fade" id="DelQuestion" tabindex="-1" aria-labelledby="DelQuestionLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header"><img width="35px" height="35px" src="{% static 'catalog/images/DelIcon.png'%}" style="padding-right: 10px;">
+          <h1 class="modal-title fs-5" id="DelQuestionLabel">Nomen Preview:</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body">
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-danger" data-bs-dismiss="modal" onclick="buttonDelClick({{i.record.pk}})">Удалить</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="EditQuestion" tabindex="-1" aria-labelledby="EditQuestionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header"><img width="35px" height="35px" src="{% static 'catalog/images/EditIcon.jpg'%}" style="padding-right: 10px;">
+          <h1 class="modal-title fs-5" id="EditQuestionLabel">Nomen Preview:</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body_edit">
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" onclick="buttonEditClick()">Изменить</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>            
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AddQuestion" tabindex="-1" aria-labelledby="AddQuestionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header"><img width="35px" height="35px" src="{% static 'catalog/images/CopyIcon.webp'%}" style="padding-right: 10px;">
+            <h1 class="modal-title fs-5" id="AddQuestionLabel">Nomen Preview:</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body_add">
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-info" data-bs-dismiss="modal" onclick="buttonAddClick()">Создать</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="InfoQuestion" tabindex="-1" aria-labelledby="InfoQuestionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header"><img width="45px" height="45px" src="{% static 'catalog/images/search.jpeg'%}" style="padding-right: 10px;">
+            <h1 class="modal-title fs-5" id="InfoQuestionLabel">Preview:</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body_info">
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script>
+
+const exampleModal = document.getElementById('DelQuestion')
+    const modalBody = document.getElementById('modal-body')
+    exampleModal.addEventListener('show.bs.modal', event => {
+    
+    const button = event.relatedTarget
+    const recipient = button.getAttribute('data-bs-whatever')
+    const sum = button.getAttribute('data-bs-vsego')
+    const objname = button.getAttribute('data-bs-objname')
+    const infodt = button.getAttribute('data-bs-dt')
+    const modalTitle = exampleModal.querySelector('.modal-title')
+    modalTitle.textContent = "Удалить запись рабочего дня ?"
+
+    // Сдесь я сам делаю HTML для отображения информации по удалению записи банкета
+    modalBody.innerHTML = `<div>
+            <table class="table-warning table-hover" style="width: 100%">             
+                <tr style="height: 20px; text-align: center; font-weight: bold; background-color: rgb(247, 240, 180); 
+                    padding: 10px; width: 100%">
+                    <td colspan="4" style="padding: 10px;">
+                        Дата: ${infodt}
+                    </td>
+                </tr>   
+                <tr style="height: 20px; text-align: left; background-color: rgb(247, 240, 180);">
+                    <td colspan="4" style="padding: 10px;">
+                        Объект: <b><u>${objname}</u></b>
+                    </td>
+                </tr>   
+                <tr style="height: 20px; text-align: left; background-color: rgb(247, 240, 180);">
+                    <td colspan="4" style="padding: 10px;">
+                        Сумма: <b><u>${sum}</u></b>
+                    </td>
+                </tr>   
+                <tr style="height: 20px; text-align: center; background-color: rgb(248, 194, 149);">
+                    <td colspan="4" style="padding: 10px;">
+                        Удалить запись ?<div><input style="display: none;" type=text id="BPK" value=${recipient}></div>
+                    </td>
+                </tr>    
+            </table>
+            `;
+            
+    })
+
+    const EditModal = document.getElementById('EditQuestion')
+    const EditBody = document.getElementById('modal-body_edit')
+    EditModal.addEventListener('show.bs.modal', event => {
+    
+    const button = event.relatedTarget
+    const recipient = button.getAttribute('data-bs-whatever')
+    const infodt = button.getAttribute('data-bs-dt')
+    const objpos = button.getAttribute('data-bs-objpos')
+    const vnal = button.getAttribute('data-bs-vnal')
+    const vbnal = button.getAttribute('data-bs-vbnal')
+    const vbs = button.getAttribute('data-bs-vbs')
+    const vpp = button.getAttribute('data-bs-vpp')
+    const vpr = button.getAttribute('data-bs-vpr')
+    const vsr = button.getAttribute('data-bs-vsr')
+    const vbar = button.getAttribute('data-bs-vbar')
+    const vkuh = button.getAttribute('data-bs-vkuh')
+    const chnal = button.getAttribute('data-bs-chnal')
+    const chbnal = button.getAttribute('data-bs-chbnal')
+    const kolg = button.getAttribute('data-bs-kolg')
+
+    const gorv = button.getAttribute('data-bs-gorv')
+    const gork = button.getAttribute('data-bs-gork')
+    const holv = button.getAttribute('data-bs-holv')
+    const holk = button.getAttribute('data-bs-holk')
+    const pizv = button.getAttribute('data-bs-pizv')
+    const pizk = button.getAttribute('data-bs-pizk')
+    const alkv = button.getAttribute('data-bs-alkv')
+    const alkk = button.getAttribute('data-bs-alkk')
+    const desv = button.getAttribute('data-bs-desv')
+    const desk = button.getAttribute('data-bs-desk')
+    const kofv = button.getAttribute('data-bs-kofv')
+    const kofk = button.getAttribute('data-bs-kofk')
+
+    const modalTitle = EditModal.querySelector('.modal-title')
+    modalTitle.textContent = "Изменение в записи рабочего дня"
+
+    const obj = Number(objpos)
+
+    // Сдесь я сам делаю HTML для отображения информации по изменению банкета
+    EditBody.innerHTML = `<div>
+            <table class="table-warning table-hover">             
+                <tr>
+                    <td style="width: 400px;">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Дата:</span>
+                            <input id="edit_date" type="date" value="${infodt}" class="form-control" aria-describedby="basic-addon1" required name="edit_date">
+                        </div>                    
+                    </td>                                        
+                    <td style="width: 400px;">
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="edit_obj">Объект:</label>
+                            <select id="edit_obj" class="form-select" name='edit_obj' style="text-align: left;">
+                                {%for e in omas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon2">В.Нал.:</span>
+                            <input id="edit_vnal" type="numeric" min="0" value="${vnal}" step="0.01" class="form-control" aria-describedby="basic-addon2" name="edit_vnal">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon3">В.Б/нал:</span>
+                            <input id="edit_vbnal" type="numeric" min="0" value="${vbnal}" class="form-control" aria-describedby="basic-addon3" name="edit_vbnal">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon4">Опл.бонус:</span>
+                            <input id="edit_vbs" type="text" min="0" value="${vbs}" class="form-control" aria-describedby="basic-addon4" name="edit_vbs">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon5">Пит.перс.:</span>
+                            <input id="edit_vpp" type="text" min="0" value="${vpp}" class="form-control" aria-describedby="basic-addon5" name="edit_vpp">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon6">Представ.:</span>
+                            <input id="edit_vpr" type="text" min="0" value="${vpr}" class="form-control" aria-describedby="basic-addon6" name="edit_vpr">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon7">Оплата серт.:</span>
+                            <input id="edit_vsr" type="text" min="0" value="${vsr}" class="form-control" aria-describedby="basic-addon7" name="edit_vsr">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon8">Выручка бар:</span>
+                            <input id="edit_vbar" type="text" min="0" value="${vbar}" class="form-control" aria-describedby="basic-addon8" name="edit_vbar">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon9">Выр. кухня:</span>
+                            <input id="edit_vkuh" type="text" min="0" value="${vkuh}" class="form-control" aria-describedby="basic-addon9" name="edit_vkuh">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon10">Чай нал.:</span>
+                            <input id="edit_chnal" type="text" min="0" value="${chnal}" class="form-control" aria-describedby="basic-addon10" name="edit_chnal">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon11">Чай б/нал.:</span>
+                            <input id="edit_chbnal" type="text" min="0" value="${chbnal}" class="form-control" aria-describedby="basic-addon11" name="edit_chbnal">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon12">Кол. гостей:</span>
+                            <input id="edit_kolg" type="text" min="0" value="${kolg}" class="form-control" aria-describedby="basic-addon12" name="edit_kolg">
+                        </div>                    
+                    </td>                                        
+                    <td>
+
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon13">Горячее(В):</span>
+                            <input id="edit_gorv" type="text" min="0" value="${gorv}" class="form-control" aria-describedby="basic-addon13" name="edit_gorv">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon14">Горячее(К):</span>
+                            <input id="edit_gork" type="text" min="0" value="${gork}" class="form-control" aria-describedby="basic-addon14" name="edit_gork">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon15">Холодное(В):</span>
+                            <input id="edit_holv" type="text" min="0" value="${holv}" class="form-control" aria-describedby="basic-addon15" name="edit_holv">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon16">Холодное(К):</span>
+                            <input id="edit_holk" type="text" min="0" value="${holk}" class="form-control" aria-describedby="basic-addon16" name="edit_holk">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon17">Пицца(В):</span>
+                            <input id="edit_pizv" type="text" min="0" value="${pizv}" class="form-control" aria-describedby="basic-addon17" name="edit_pizv">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon18">Пицца(К):</span>
+                            <input id="edit_pizk" type="text" min="0" value="${pizk}" class="form-control" aria-describedby="basic-addon18" name="edit_pizk">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon19">Дессерт(В):</span>
+                            <input id="edit_desv" type="text" min="0" value="${desv}" class="form-control" aria-describedby="basic-addon19" name="edit_desv">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon20">Дессерт(К):</span>
+                            <input id="edit_desk" type="text" min="0" value="${desk}" class="form-control" aria-describedby="basic-addon20" name="edit_desk">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon21">Кофе/Чай(В):</span>
+                            <input id="edit_kofv" type="text" min="0" value="${kofv}" class="form-control" aria-describedby="basic-addon21" name="edit_kofv">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon22">Кофе/Чай(К):</span>
+                            <input id="edit_kofk" type="text" min="0" value="${kofk}" class="form-control" aria-describedby="basic-addon22" name="edit_kofk">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon23">Алкоголь(В):</span>
+                            <input id="edit_alkv" type="text" min="0" value="${alkv}" class="form-control" aria-describedby="basic-addon23" name="edit_alkv">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon24">Алкоголь(К):</span>
+                            <input id="edit_alkk" type="text" min="0" value="${alkk}" class="form-control" aria-describedby="basic-addon24" name="edit_alkk">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+            </table>
+            <div class="mb-3">
+                      <input style="display: none" type=text id="BPK0" value="${recipient}" ></input>
+                </div>
+            </div>
+            `;
+        
+        let selectObj = document.getElementById('edit_obj');
+        selectObj.value = objpos;
+            
+    })
+
+    const AddModal = document.getElementById('AddQuestion')
+    const AddBody = document.getElementById('modal-body_add')
+    AddModal.addEventListener('show.bs.modal', event => {
+    
+    const button = event.relatedTarget
+    const recipient = '0'
+    const infodt = button.getAttribute('data-bs-date')
+    const objpos = button.getAttribute('data-bs-objpos')
+    const vnal = '0'
+    const vbnal = '0'
+    const vbs = '0'
+    const vpp = '0'
+    const vpr = '0'
+    const vsr = '0'
+    const vbar = '0'
+    const vkuh = '0'
+    const chnal = '0'
+    const chbnal = '0'
+    const kolg = '0'
+
+    const gorv = '0'
+    const gork = '0'
+    const holv = '0'
+    const holk = '0'
+    const pizv = '0'
+    const pizk = '0'
+    const alkv = '0'
+    const alkk = '0'
+    const desv = '0'
+    const desk = '0'
+    const kofv = '0'
+    const kofk = '0'
+
+    const modalTitle = AddModal.querySelector('.modal-title')
+    modalTitle.textContent = "Создание записи рабочего дня"
+
+    const obj = Number(objpos)
+
+    console.log(infodt);
+
+    // Сдесь я сам делаю HTML для отображения информации по созданию рабочего дня
+    AddBody.innerHTML = `<div>
+            <table class="table-warning table-hover">             
+                <tr>
+                    <td style="width: 400px;">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon31">Дата:</span>
+                            <input id="add_date" type="date" value="${infodt}" class="form-control" aria-describedby="basic-addon31" required name="add_date">
+                        </div>                    
+                    </td>                                        
+                    <td style="width: 400px;">
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="add_obj">Объект:</label>
+                            <select id="add_obj" class="form-select" name='add_obj' style="text-align: left;">
+                                {%for e in omas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon32">В.Нал.:</span>
+                            <input id="add_vnal" type="numeric" min="0" value="${vnal}" step="0.01" class="form-control" aria-describedby="basic-addon32" name="add_vnal">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon33">В.Б/нал:</span>
+                            <input id="add_vbnal" type="numeric" min="0" value="${vbnal}" class="form-control" aria-describedby="basic-addon3" name="add_vbnal">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon34">Опл.бонус:</span>
+                            <input id="add_vbs" type="text" min="0" value="${vbs}" class="form-control" aria-describedby="basic-addon34" name="add_vbs">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon35">Пит.перс.:</span>
+                            <input id="add_vpp" type="text" min="0" value="${vpp}" class="form-control" aria-describedby="basic-addon35" name="add_vpp">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon36">Представ.:</span>
+                            <input id="add_vpr" type="text" min="0" value="${vpr}" class="form-control" aria-describedby="basic-addon36" name="add_vpr">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon37">Оплата серт.:</span>
+                            <input id="add_vsr" type="text" min="0" value="${vsr}" class="form-control" aria-describedby="basic-addon37" name="add_vsr">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon38">Выручка бар:</span>
+                            <input id="add_vbar" type="text" min="0" value="${vbar}" class="form-control" aria-describedby="basic-addon38" name="add_vbar">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon39">Выр. кухня:</span>
+                            <input id="add_vkuh" type="text" min="0" value="${vkuh}" class="form-control" aria-describedby="basic-addon39" name="add_vkuh">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon310">Чай нал.:</span>
+                            <input id="add_chnal" type="text" min="0" value="${chnal}" class="form-control" aria-describedby="basic-addon310" name="add_chnal">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon311">Чай б/нал.:</span>
+                            <input id="add_chbnal" type="text" min="0" value="${chbnal}" class="form-control" aria-describedby="basic-addon311" name="add_chbnal">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon312">Кол. гостей:</span>
+                            <input id="add_kolg" type="text" min="0" value="${kolg}" class="form-control" aria-describedby="basic-addon312" name="add_kolg">
+                        </div>                    
+                    </td>                                        
+                    <td>
+
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon313">Горячее(В):</span>
+                            <input id="add_gorv" type="text" min="0" value="${gorv}" class="form-control" aria-describedby="basic-addon313" name="add_gorv">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon314">Горячее(К):</span>
+                            <input id="add_gork" type="text" min="0" value="${gork}" class="form-control" aria-describedby="basic-addon314" name="add_gork">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon315">Холодное(В):</span>
+                            <input id="add_holv" type="text" min="0" value="${holv}" class="form-control" aria-describedby="basic-addon315" name="add_holv">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon316">Холодное(К):</span>
+                            <input id="add_holk" type="text" min="0" value="${holk}" class="form-control" aria-describedby="basic-addon316" name="add_holk">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon317">Пицца(В):</span>
+                            <input id="add_pizv" type="text" min="0" value="${pizv}" class="form-control" aria-describedby="basic-addon317" name="add_pizv">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon318">Пицца(К):</span>
+                            <input id="add_pizk" type="text" min="0" value="${pizk}" class="form-control" aria-describedby="basic-addon318" name="add_pizk">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon319">Дессерт(В):</span>
+                            <input id="add_desv" type="text" min="0" value="${desv}" class="form-control" aria-describedby="basic-addon319" name="add_desv">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon320">Дессерт(К):</span>
+                            <input id="add_desk" type="text" min="0" value="${desk}" class="form-control" aria-describedby="basic-addon320" name="add_desk">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon321">Кофе/Чай(В):</span>
+                            <input id="add_kofv" type="text" min="0" value="${kofv}" class="form-control" aria-describedby="basic-addon321" name="add_kofv">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon322">Кофе/Чай(К):</span>
+                            <input id="add_kofk" type="text" min="0" value="${kofk}" class="form-control" aria-describedby="basic-addon322" name="add_kofk">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon323">Алкоголь(В):</span>
+                            <input id="add_alkv" type="text" min="0" value="${alkv}" class="form-control" aria-describedby="basic-addon323" name="add_alkv">
+                        </div>                    
+                    </td>                                        
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon324">Алкоголь(К):</span>
+                            <input id="add_alkk" type="text" min="0" value="${alkk}" class="form-control" aria-describedby="basic-addon324" name="add_alkk">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+            </table>
+            <div class="mb-3">
+                      <input style="display: none" type=text id="BPK1" value="${recipient}" ></input>
+                </div>
+            </div>
+            `;
+        
+        let selectObj = document.getElementById('add_obj');
+        selectObj.value = objpos;
+            
+    })
+
+    const InfoModal = document.getElementById('InfoQuestion')
+    const InfoBody = document.getElementById('modal-body_info')
+    InfoModal.addEventListener('show.bs.modal', event => {
+    
+    const button = event.relatedTarget
+    const recipient = button.getAttribute('data-bs-whatever')
+    const sum = button.getAttribute('data-bs-sum')
+    const infodt = button.getAttribute('data-bs-dt')
+    const vmerpos = button.getAttribute('data-bs-vmerpos')
+    const kolg = button.getAttribute('data-bs-kolg')
+    const customer = button.getAttribute('data-bs-customer')
+    const contact = button.getAttribute('data-bs-contact')
+    const objpos = button.getAttribute('data-bs-objpos')
+    const voplpos = button.getAttribute('data-bs-voplpos')
+    const predoplata = button.getAttribute('data-bs-predoplata')
+    const voplppos = button.getAttribute('data-bs-voplppos')
+    const ssbor = button.getAttribute('data-bs-ssbor')
+    const psbor = button.getAttribute('data-bs-psbor')
+    const remark = button.getAttribute('data-bs-remark')
+
+    const modalTitle = InfoModal.querySelector('.modal-title')
+    modalTitle.textContent = "Информация по записи банкета"
+
+    const vmer = Number(vmerpos)
+    const obj = Number(objpos)
+    const vopl = Number(voplpos)
+    const voplp = Number(voplppos)
+    
+    // Сдесь я сам делаю HTML для отображения информации по банкету
+    InfoBody.innerHTML = `<div>
+            <table class="table-warning table-hover">             
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon21">Дата:</span>
+                            <input id="info_date" type="date" value="${infodt}" class="form-control" aria-describedby="basic-addon21" value={{bdate}}  name="info_date" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="info_vmer">Мероприятие:</label>
+                            <select id="info_vmer" class="form-select" name='info_vmer' style="text-align: left;" disabled>
+                                {%for e in mmas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="info_obj">Объект:</label>
+                            <select id="info_obj" class="form-select" name='info_obj' style="text-align: left;" disabled>
+                                {%for e in omas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+                {% if request.user.A_BanketFin %}
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon22">Сумма:</span>
+                            <input id="info_sum" type="number" min="0" value="${sum}" class="form-control" aria-describedby="basic-addon22" name="info_sum" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="info_vopl">Вид оплаты:</label>
+                            <select id="info_vopl" class="form-select" name='info_vopl' style="text-align: left;" disabled>
+                                {%for e in vmas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon23">Количество гостей:</span>
+                            <input id="info_kolg" type="number" min="0" value="${kolg}" class="form-control" aria-describedby="basic-addon3" name="info_kolg" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+                {% if request.user.A_BanketFin %}
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon24">Предоплата:</span>
+                            <input id="info_predoplata" type="number" min="0" value="${predoplata}" class="form-control" aria-describedby="basic-addon24" name="info_predoplata" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="info_voplp">Вид  предоплаты:</label>
+                            <select id="info_voplp" class="form-select" name='info_voplp' style="text-align: left;" disabled>
+                                {%for e in vmas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon25">Серв. сбор:</span>
+                            <input id="info_ssbor" ttype="number" min="0" value="${ssbor}" class="form-control" aria-describedby="basic-addon25" name="info_ssbor" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon26">Проб. сбор:</span>
+                            <input id="info_psbor" type="text" value="${psbor}" class="form-control" aria-describedby="basic-addon26" name="info_psbor" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+                {% endif %}
+
+                <tr style="height: 20px;">
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon216">Заказчик:</span>
+                            <input id="info_customer" type="text" value="${customer}" class="form-control" aria-describedby="basic-addon216" name="info_customer" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon218">Контакт:</span>
+                            <input id="info_contact" type="text" value="${contact}" class="form-control" name="info_contact" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+                
+                <tr>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon29">Комментарий:</span>
+                            <textarea id="info_remark" type="text" rows="4" class="form-control" name="info_remark" disabled>${remark}</textarea>
+                        </div>
+                    </td>
+                </tr>
+
+            </table>
+            <div class="mb-3">
+                      <input style="display: none" type=text id="BPK2" value="${recipient}"></input>
+                </div>
+            </div>
+            `;
+        
+        let selectElement = document.getElementById('info_vmer');
+        selectElement.value = vmer;
+
+        let selectObj = document.getElementById('info_obj');
+        selectObj.value = obj;
+
+        let selectVidopl = document.getElementById('info_vopl');
+        selectVidopl.value = vopl;
+
+        let selectVidoplp = document.getElementById('info_voplp');
+        selectVidoplp.value = voplp;
+            
+    })
+
+async function req (ur) {
+    
+    let url = ur;
+    console.log(url);
+
+    let response = await fetch(url, {referrerPolicy: "origin"});
+    
+}    
+
+async function req_data (ur, dt) {
+    
+    let url = ur;
+    let data = dt;
+
+    const csrftoken = '{{ csrf_token }}'
+
+    console.log(url);
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify(data),
+    })
+    const result = await response.text()
+    return result    
+
+} 
+
+const buttonDelClick = (bpk) => {
+    
+    const den_pk = document.getElementById('BPK').value;
+
+    let url = "/denrecdel/" + den_pk + "/";
+    console.log(url);    
+    req(url);
+    location.reload();
+}    
+
+const buttonEditClick = () => {
+
+    const url = '/denrecedit/'
+    
+    const d_dt = document.getElementById('edit_date').value;
+    const d_obj = document.getElementById('edit_obj').value;
+
+    const d_vnal = document.getElementById('edit_vnal').value;
+    const d_vbnal = document.getElementById('edit_vbnal').value;
+    const d_vbs = document.getElementById('edit_vbs').value;
+    const d_vpp = document.getElementById('edit_vpp').value;
+    const d_vpr = document.getElementById('edit_vpr').value;
+    const d_vsr = document.getElementById('edit_vsr').value;
+    const d_vbar = document.getElementById('edit_vbar').value;
+    const d_vkuh = document.getElementById('edit_vkuh').value;
+    const d_chnal = document.getElementById('edit_chnal').value;
+    const d_chbnal = document.getElementById('edit_chbnal').value;
+    const d_kolg = document.getElementById('edit_kolg').value;
+
+    const d_gorv = document.getElementById('edit_gorv').value;
+    const d_gork = document.getElementById('edit_gork').value;
+    const d_holv = document.getElementById('edit_holv').value;
+    const d_holk = document.getElementById('edit_holk').value;
+    const d_pizv = document.getElementById('edit_pizv').value;
+    const d_pizk = document.getElementById('edit_pizk').value;
+    const d_desv = document.getElementById('edit_desv').value;
+    const d_desk = document.getElementById('edit_desk').value;
+    const d_kofv = document.getElementById('edit_kofv').value;
+    const d_kofk = document.getElementById('edit_kofk').value;
+    const d_alkv = document.getElementById('edit_alkv').value;
+    const d_alkk = document.getElementById('edit_alkk').value;
+
+
+    const d_pk = document.getElementById('BPK0').value;
+
+    const data = {
+        dt: d_dt,
+        obj: d_obj,
+        vnal: d_vnal,
+        vbnal: d_vbnal,
+        vbs: d_vbs,
+        vpp: d_vpp,
+        vpr: d_vpr,
+        vsr: d_vsr,
+        vbar: d_vbar,
+        vkuh: d_vkuh,
+        chnal: d_chnal,
+        chbnal: d_chbnal,
+        kolg: d_kolg,
+
+        gorv: d_gorv,
+        gork: d_gork,
+        holv: d_holv,
+        holk: d_holk,
+        pizv: d_pizv,
+        pizk: d_pizk,
+        kofv: d_kofv,
+        kofk: d_kofk,
+        desv: d_desv,
+        desk: d_desk,
+        alkv: d_alkv,
+        alkk: d_alkk,
+
+        pk: d_pk,
+    };
+
+    req_data (url, data);
+    console.log(data);
+    //location.reload();
+    window.location.reload();
+}    
+
+const buttonAddClick = () => {
+    
+    const url = '/denrecadd/'
+    
+    const d_dt = document.getElementById('add_date').value;
+    const d_obj = document.getElementById('add_obj').value;
+
+    const d_vnal = document.getElementById('add_vnal').value;
+    const d_vbnal = document.getElementById('add_vbnal').value;
+    const d_vbs = document.getElementById('add_vbs').value;
+    const d_vpp = document.getElementById('add_vpp').value;
+    const d_vpr = document.getElementById('add_vpr').value;
+    const d_vsr = document.getElementById('add_vsr').value;
+    const d_vbar = document.getElementById('add_vbar').value;
+    const d_vkuh = document.getElementById('add_vkuh').value;
+    const d_chnal = document.getElementById('add_chnal').value;
+    const d_chbnal = document.getElementById('add_chbnal').value;
+    const d_kolg = document.getElementById('add_kolg').value;
+
+    const d_gorv = document.getElementById('add_gorv').value;
+    const d_gork = document.getElementById('add_gork').value;
+    const d_holv = document.getElementById('add_holv').value;
+    const d_holk = document.getElementById('add_holk').value;
+    const d_pizv = document.getElementById('add_pizv').value;
+    const d_pizk = document.getElementById('add_pizk').value;
+    const d_desv = document.getElementById('add_desv').value;
+    const d_desk = document.getElementById('add_desk').value;
+    const d_kofv = document.getElementById('add_kofv').value;
+    const d_kofk = document.getElementById('add_kofk').value;
+    const d_alkv = document.getElementById('add_alkv').value;
+    const d_alkk = document.getElementById('add_alkk').value;
+
+    // const d_pk = document.getElementById('BPK1').value;
+    const d_pk = 0;
+
+    const data = {
+        dt: d_dt,
+        obj: d_obj,
+        vnal: d_vnal,
+        vbnal: d_vbnal,
+        vbs: d_vbs,
+        vpp: d_vpp,
+        vpr: d_vpr,
+        vsr: d_vsr,
+        vbar: d_vbar,
+        vkuh: d_vkuh,
+        chnal: d_chnal,
+        chbnal: d_chbnal,
+        kolg: d_kolg,
+
+        gorv: d_gorv,
+        gork: d_gork,
+        holv: d_holv,
+        holk: d_holk,
+        pizv: d_pizv,
+        pizk: d_pizk,
+        kofv: d_kofv,
+        kofk: d_kofk,
+        desv: d_desv,
+        desk: d_desk,
+        alkv: d_alkv,
+        alkk: d_alkk,
+
+        pk: 0,
+    };
+
+    req_data (url, data);
+    console.log(data);
+    location.reload();    
+}    
+
+
+</script>
+
+{% endblock %}

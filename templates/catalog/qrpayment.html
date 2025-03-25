@@ -1,0 +1,75 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- <h1 style="margin-left: auto; margin-right: auto;">{{title}}</h1> -->
+<div style="text-align: center; 
+			color: rgb(33, 33, 90);
+			font-size: 24px; 
+			font-weight: bold;">
+	{{title}}
+</div>
+
+<div style="padding-left: 10px; font-size: 18px; padding-top: 15px;">
+	Получатель:	<span style="color: rgb(38, 134, 38); font-weight: bold;">ООО "ТВИН"</span>
+</div>
+<div style="padding-left: 10px; font-size: 18px; padding-top: 0px;">
+	ИНН/КПП: <span style="color: rgb(38, 134, 38); font-weight: bold;">1101075710/110101001"</span>
+</div>
+<div style="padding-left: 10px; font-size: 18px; padding-top: 0px;">
+	Адрес: <span style="color: rgb(38, 134, 38); font-weight: bold;">г.Сыктывкар, Первомайская, 62"</span>
+</div>
+<div style="padding-left: 10px; font-size: 18px; padding-top: 0px;">
+	Кафе: <span style="color: rgb(38, 134, 38); font-weight: bold;">Эль Густо"</span>
+</div>
+
+{% if status == 0%}
+
+   <form action="{% url 'QRPayment' %}" method="post">
+	
+	{% csrf_token %}
+
+	<div style="padding-left: 50px; padding-top: 20px;">
+		{{ form.as_p }}
+	</div>
+	
+	<div class="d-grid gap-2 col-6 mx-auto" style="padding-top: 40px; width: 50px;">
+	   <button class="btn btn-primary" type="submit">Сформировать QR код</button>
+	</div> 
+   
+   </form>
+
+{% else %}
+   
+   <div id="Quest">
+	<div id="Pic" style="text-align: center;">
+
+		<div style="padding-left: 10px; font-size: 20px; font-weight: bold; padding-top: 15px;">
+			Оплата заказа на сумму:	<span style="color: rgb(21, 90, 240); font-size: 24px;">{{order_sum}} р.</span>
+		</div>
+	
+		<img src="{% static image %}" height="300" width="300">
+
+
+		<div id="Hidden" style="display: none;">
+			<div id="order_id">{{order_id}}</div>
+			<div id="order_number">{{order_number}}</div>
+			<div id="order_sum">{{order_sum}}</div>
+		</div>
+
+		<div style="text-align: center; 
+			color: rgb(184, 20, 124);
+			font-size: 18px; 
+			font-weight: bold;">
+			Ожидание поступления денег.....
+		</div>
+	
+	</div>
+   </div>
+
+{% endif %}
+
+<script src="{% static 'catalog/js/qr_request.js' %}"></script>
+
+{% endblock %}

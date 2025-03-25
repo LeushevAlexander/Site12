@@ -1,0 +1,423 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+{% load static %}
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<form action="{% url 'ChlControl' %}" method="post">
+    
+    {% csrf_token %}
+    
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th style="width: 250px; text-align: center; vertical-align: top;">
+                    <div>
+                        <label for="id_tabel_date">Дата Ч/Л:</label>
+                        <input id="id_tabel_date" type="date" value={{date_chl}} required id="" name="chl_date">
+                    </div>
+                </th>
+                <th  style="width: 100px;">
+
+                </th>
+            </tr>
+            <tr>
+                <th style="width: 250px; text-align: center; vertical-align: top;">
+                    <label for="id_chl">Чек лист:</label>
+                    <select id="id_chl" class="form-select" name="chl" style="width: 250px; vertical-align: middle">
+                        {%for e in clist%}
+                            {% if e.id != setchl %}
+                                <option value={{e.id}}>{{e.name}}</option> 
+                            {% else %}    
+                                <option value={{e.id}} selected={{e.id}}>{{e.name}}</option> 
+                            {% endif%}
+                        {% endfor %}
+                    </select>
+                </th>
+                <th style="text-align: left; vertical-align: middle;">
+                    <img style="cursor: pointer;" src="{% static 'catalog/images/reload.png' %}" width="80px" height="100px" onclick='submit()'>
+                </th>
+            </tr>
+        </thead>
+    </table>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th style="width: 150; text-align: center;">Задачи для проверки Ч/Л</th>
+            {%for u in uch%}            
+                <th style="width: 50px; text-align: center;">{{ u.name }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    
+    <tbody class="table-warning table-hover">
+
+        {%for e in task%}
+
+        <tr class="table-warning table-hover">
+            <td>{{ e.n }}. {{ e.name }}</td>
+            {%for u in uch%}            
+                    {% if u.number == 1 %}
+                    <td style="text-align: center; vertical-align: middle;" id="rb_{{e.pk}}1">
+                        {%if e.f1 == False %}   
+                            <img style="cursor: pointer;" src="{% static 'catalog/images/control_check.jpg' %}" width="40px" height="40px" onclick='buttonClick({{e.pk}}1)'>
+                            <img style="cursor: pointer;" src="{% static 'catalog/images/promlem.png' %}" width="40px" height="40px" 
+                                    data-bs-toggle="modal" data-bs-target="#NomenDescription" data-bs-name="{{e.name}}" 
+                                    data-bs-whatever="{{e.pk}}{{u.number}}" data-bs-desc="{{e.obj}}" data-bs-uname="{{u.name}}"> 
+                        {% else %}
+                            {% if e.sf1 == True %} 
+                                <img src="{% static 'catalog/images/control_ok.png' %}" width="40px" height="50px">
+                            {% else %}
+                                <img style="cursor: pointer;" src="{% static 'catalog/images/attation.gif' %}" width="30px" height="30px" 
+                                data-bs-toggle="modal" data-bs-target="#ProblemDescription" data-bs-name="{{e.name}}" id="p_{{e.pk}}"
+                                data-bs-whatever="{{e.pk}}{{u.number}}" data-bs-desc="{{e.obj}}" data-bs-uname="{{u.name}}" data-bs-img="{{e.img1.url}}" 
+                                data-bs-remtext="{{e.rem1}}" data-bs-otm="{{e.otm1}}" data-bs-con="{{e.con1}}">
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    {% endif %}
+                    
+                    {% if u.number == 2 %}
+                    <td style="text-align: center; vertical-align: middle;" id="rb_{{e.pk}}2">
+                        {%if e.f2 == False %}   
+                            <img style="cursor: pointer;" src="{% static 'catalog/images/control_check.jpg' %}" width="40px" height="40px" onclick='buttonClick({{e.pk}}2)'>
+                            <img style="cursor: pointer;" src="{% static 'catalog/images/promlem.png' %}" width="40px" height="40px" 
+                                data-bs-toggle="modal" data-bs-target="#NomenDescription" data-bs-name="{{e.name}}" 
+                                data-bs-whatever="{{e.pk}}{{u.number}}" data-bs-desc="{{e.obj}}" data-bs-uname="{{u.name}}"> 
+                        {% else %}
+                            {% if e.sf2 == True %} 
+                                <img src="{% static 'catalog/images/control_ok.png' %}" width="40px" height="50px">
+                            {% else %}
+                                <img style="cursor: pointer;" src="{% static 'catalog/images/attation.gif' %}" width="30px" height="30px" 
+                                data-bs-toggle="modal" data-bs-target="#ProblemDescription" data-bs-name="{{e.name}}" id="p_{{e.pk}}"
+                                data-bs-whatever="{{e.pk}}{{u.number}}" data-bs-desc="{{e.obj}}" data-bs-uname="{{u.name}}" data-bs-img="{{e.img2.url}}" 
+                                data-bs-remtext="{{e.rem2}}" data-bs-otm="{{e.otm2}}" data-bs-con="{{e.con2}}">
+                        {% endif %}
+                        {% endif %}
+                    </td>
+                    {% endif %}
+                    
+                    {% if u.number == 3 %}
+                    <td style="text-align: center; vertical-align: middle;" id="rb_{{e.pk}}3">
+                        {%if e.f3 == False %}   
+                            <img style="cursor: pointer;" src="{% static 'catalog/images/control_check.jpg' %}" width="40px" height="40px" onclick='buttonClick({{e.pk}}3)'>
+                            <img style="cursor: pointer;" src="{% static 'catalog/images/promlem.png' %}" width="40px" height="40px" 
+                                data-bs-toggle="modal" data-bs-target="#NomenDescription" data-bs-name="{{e.name}}" 
+                                data-bs-whatever="{{e.pk}}{{u.number}}" data-bs-desc="{{e.obj}}" data-bs-uname="{{u.name}}"> 
+                        {% else %}
+                            {% if e.sf3 == True %} 
+                                <img src="{% static 'catalog/images/control_ok.png' %}" width="40px" height="50px">
+                            {% else %}
+                                <img style="cursor: pointer;" src="{% static 'catalog/images/attation.gif' %}" width="30px" height="30px" 
+                                data-bs-toggle="modal" data-bs-target="#ProblemDescription" data-bs-name="{{e.name}}" id="p_{{e.pk}}"
+                                data-bs-whatever="{{e.pk}}{{u.number}}" data-bs-desc="{{e.obj}}" data-bs-uname="{{u.name}}" data-bs-img="{{e.img3.url}}" 
+                                data-bs-remtext="{{e.rem3}}" data-bs-otm="{{e.otm3}}" data-bs-con="{{e.con3}}">
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    {% endif %}
+            {% endfor %}            
+        </tr>
+        
+        {% endfor %}    
+
+    </tbody>
+</table>
+
+</form>
+
+<div class="modal fade" id="NomenDescription" tabindex="-1" aria-labelledby="NomenModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="NomenModalLabel">Nomen Preview:</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body">
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="buttonSaveClick({{t.id}})">Сохранить</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ProblemDescription" tabindex="-1" aria-labelledby="ProblemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="ProblemModalLabel">Проблема с выполнением:</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body">
+            Данные в окне
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script>
+
+    const exampleModal = document.getElementById('NomenDescription')
+    const modalBody = document.getElementById('modal-body')
+    exampleModal.addEventListener('show.bs.modal', event => {
+    
+    // Icon that triggered the modal
+    const button = event.relatedTarget
+    // Extract info from data-bs-* attributes
+    const recipient = button.getAttribute('data-bs-whatever')
+    const taskname = button.getAttribute('data-bs-name')
+    const objname = button.getAttribute('data-bs-desc')
+    const izo = button.getAttribute('data-bs-izo')
+    const uname = button.getAttribute('data-bs-uname')
+    // If necessary, you could initiate an AJAX request here
+    // and then do the updating in a callback.
+    //
+    // Update the modal's content.
+    const modalTitle = exampleModal.querySelector('.modal-title')
+    //const modalBodyInput = exampleModal.querySelector('.modal-body input')
+    // const modalBodyName = exampleModal.querySelector('.modal-body NomenName')
+    // const modalBodyDescription = exampleModal.querySelector('.N_Description')    
+    //const nomen = exampleModal.querySelector('.modal-body N-Description')
+
+    //modalTitle.textContent = `Окно товара: ${nomenname}`
+    modalTitle.textContent = "Описание проблемы"
+
+    // modalBodyInput.value = recipient
+    //modalBodyInput.value = `${recipient}`
+    //modalBodyName.value = nomenname
+    //n_descript.innerHTML = `<div class="N-Description" id="N-Description"><h1>ВОТ ОПИСАНИЕ !!!</h1></div>`
+    //nomen.textContent = `ОПИСАНИЕ ТОВАРА!!!`  
+    //modalBody.textContent = `kjhsdfkjasasdhflkasjdhf`
+
+    // Сдесь я сам делаю HTML для отображения информации по товару
+    modalBody.innerHTML = `
+            <form action = "{% url 'ChlUploadImage' 999 %}" method="post" enctype="multipart/form-data" id="UploadImageForm">
+            {% csrf_token %}
+            <div>
+            <p>Объект: ${objname}, участок: ${uname}</p>        
+            <p>Задача: ${taskname}</p>        
+            <div class="mb-3">
+                      <input style="display: none" type=text id="TaskPK" value=${recipient} ></input>
+                      <label for="exampleFormControlTextarea1" class="form-label">Описание ошибки:</label>
+                      <textarea class="form-control" id="ProblemText" rows="2"></textarea>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <input type="file" class="form-control" aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept="image/jpeg" name="file_upload" id='file_upload'>
+                <button class="btn btn-outline-secondary" type="submit" id="inputGroupFileAddon04" onclick="buttonUploadImage(${recipient})">Загрузить</button>
+            </div>            
+
+            </form>
+            `;
+            
+    })
+
+    async function req (ur) {
+    
+        let url = ur;
+        console.log(url);
+    
+        let response = await fetch(url, {referrerPolicy: "origin"});
+        
+    }
+    
+    const buttonClick = (b_id) => {
+    
+        const butDiv = document.getElementById('rb_'+b_id);           
+        butDiv.innerHTML =`
+        <td><img src="{% static 'catalog/images/control_ok.png' %}" width="40px" height="50px"></td>
+        `;
+        
+        // теперь надо из таблицы django убрать запись, вызываем marktask
+        let url = "/setchlcontroltask/" + b_id + "/";
+        console.log(url);
+        
+        req(url);
+        
+        }
+
+    
+    const buttonSaveClick = (b_id) => {
+    
+        // теперь надо сохранить из окна запись об ошибке
+        //const button = event.relatedTarget
+        //const recipient = button.getAttribute('data-bs-whatever')
+   
+        // меняем значек иконку на то что проверено и не прошло проверку
+
+            const remtext = document.getElementById('ProblemText').value;
+            const taskpk = document.getElementById('TaskPK').value;
+
+            if (remtext.length > 0) {
+
+                const butDiv = document.getElementById('rb_'+ taskpk);           
+                butDiv.innerHTML =`
+                <td><img src="{% static 'catalog/images/attation.gif' %}" width="30px" height="30px"></td>
+                `;
+
+                let url = "/savechlcontroltaskrem/" + taskpk + "/" + remtext + "/" ;
+                console.log(url);
+    
+                req(url);
+            }
+            else {
+                alert ('Опишите проблему.')
+            }
+
+
+        }
+    
+
+    //const buttonProblemInfoClick = (b_id) => {
+    
+        // открываем модальное окно с описанием проблемы и с изображением
+    //     const pModal = document.getElementById('NomenDescription')
+    // const modalBody = document.getElementById('modal-body')
+    //pModal.addEventListener('show.bs.modal', event => {
+    
+    // Icon that triggered the modal
+//        const button = event.relatedTarget
+    // Extract info from data-bs-* attributes
+  //      const recipient = button.getAttribute('data-bs-whatever')
+    //    const taskname = button.getAttribute('data-bs-name')
+      //  const objname = button.getAttribute('data-bs-desc')
+        //const izo = button.getAttribute('data-bs-izo')
+       // const uname = button.getAttribute('data-bs-uname')
+    // If necessary, you could initiate an AJAX request her
+    // and then do the updating in a callback.
+    //
+    // Update the modal's content.
+    //  const modalTitle = exampleModal.querySelector('.modal-title')
+    //const modalBodyInput = exampleModal.querySelector('.modal-body input')
+    // const modalBodyName = exampleModal.querySelector('.modal-body NomenName')
+    // const modalBodyDescription = exampleModal.querySelector('.N_Description')    
+    //const nomen = exampleModal.querySelector('.modal-body N-Description')
+
+    //modalTitle.textContent = `Окно товара: ${nomenname}`
+    //modalTitle.textContent = "Описание проблемы"
+
+//        const button = document.getElementById('p_'+ b_id)
+
+//       const objname = button.getAttribute('data-bs-desc')
+        //new bootstrap.Modal(document.getElementById('ProblemDescription')).show();
+
+        //const objname = 'БРРРРР';
+
+    var myModalEl = document.getElementById('ProblemDescription')
+    myModalEl.addEventListener('show.bs.modal', event => {
+            
+            // сделайте что-нибудь...
+            const button = event.relatedTarget
+            const recipient = button.getAttribute('data-bs-whatever')
+            const taskname = button.getAttribute('data-bs-name')
+            const objname = button.getAttribute('data-bs-desc')
+            const img = button.getAttribute('data-bs-img')
+            const uname = button.getAttribute('data-bs-uname')
+            const remtext = button.getAttribute('data-bs-remtext')
+            const otm = button.getAttribute('data-bs-otm')
+            const con = button.getAttribute('data-bs-con')
+
+            const modalTitle = myModalEl.querySelector('.modal-title')
+            modalTitle.textContent = "Описание проблемы:"
+            const modalBody = myModalEl.querySelector('.modal-body')
+
+            // Сдесь я сам делаю HTML для отображения информации по проблеме
+            modalBody.innerHTML = `
+            <div>
+            <p>Объект: ${objname}, участок: ${uname}</p>        
+            <p>Задача: ${taskname}</p>    
+            <div class="mb-3">
+                    <input style="display :none" type=text id="TaskPK" value=${recipient} ></input>
+                    <dl class="row">
+                        <dt class="col-sm-3">Отметил:</dt>
+                        <dd class="col-sm-9">${otm}</dd>
+                    </dl>
+                    <dl class="row">
+                        <dt class="col-sm-3">Контроль:</dt>
+                        <dd class="col-sm-9">${con}</dd>
+                    </dl>
+                    <dl class="row">
+                        <dt class="col-sm-3">Описание проблемы:</dt>
+                        <dd class="col-sm-9">${remtext}</dd>
+                    </dl>
+                </div>
+            </div>
+            <img src="${img}" class="img-fluid" alt="...">
+            `;            
+  
+        })    
+
+    const buttonUploadImage = (b_id) => {
+
+        // загружаем изображение
+        var form = document.getElementById('UploadImageForm');
+        var fl = document.getElementById('file_upload');
+
+        form.addEventListener('submit', event => {
+  	    event.preventDefault(); // блокируем обычную отправку формы
+
+        if (fl.value.length > 0) {
+
+            var formData = new FormData(form);
+            	    
+            // fetch(form.action + '/' + b_id + '/', {
+ 	        //         method: "POST",
+            //         body: formData,
+            //         taskpk: b_id,
+            // })
+
+            let l = form.action;   
+            l = l.replace(/999/, b_id);         
+
+            fetch(l, {
+ 	                 method: "POST",
+                     body: formData,
+                     taskpk: b_id,
+             })
+
+            .then(res => res.json())
+            .then(res => console.log(res.data)) // искомый ответ
+
+            let a = fl.value
+            a1 = a.split('fakepath')[1];
+            a1 = a1.substr(1);
+
+            alert ('Изображение ' + a1 + ' загружено!' )
+
+            alert (res.data)
+        }
+        else
+            {
+                alert ('Выберите изображение ....')
+            }
+        
+        });    
+    }
+
+</script>
+
+{% endblock %}

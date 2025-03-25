@@ -1,0 +1,31 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+{% csrf_token %}
+
+<p>Создан комментарий на дату: {{date_remark}}</p>
+<p></p>
+<p>{{textremark}}</p>
+<p>Автор: {{creator}}</p>
+<p></p>
+
+{% endblock %}
+

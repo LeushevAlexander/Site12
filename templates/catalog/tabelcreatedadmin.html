@@ -1,0 +1,61 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+{% csrf_token %}
+
+<div style="font-size: 16px; font-weight: bold; color: #0c0c9c; padding-left: 20px;">
+    Создан табель на дату: {{date_tabel}} <p></p>
+</div>
+
+<div style="font-size: 16px; font-weight: bold; color: #0c0c9c; padding-left: 20px;">
+    Вид начисления: {{vnach}} <p></p>
+</div>
+
+<div style="font-size: 16px; font-weight: bold; color: #0c0c9c; padding-left: 20px;">
+    Автор: {{user.username}}
+</div>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Сотрудники в табеле</th>
+            <th style="width: 80px; text-align: center;";>Сумма</th>
+        </tr>
+    </thead>
+    
+    <tbody class="table-warning table-hover">
+
+
+    {% for n in slist %}
+
+    <tr class="table-warning table-hover">
+        <td>{{ n.sotr.name }}</td>
+        <td style="width: 20px; text-align: center;";>{{ n.sotr.ei.name }}</td>
+        <td style="width: 20px; text-align: center;";>{{ n.sum }}</td>
+    </tr>
+
+    {% endfor %}
+
+    </tbody>
+</table>
+
+{% endblock %}
+

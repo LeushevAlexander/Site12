@@ -1,0 +1,71 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<form action="{% url 'ControlTasks' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    <div class="d-grid gap-2 col-6 mx-auto">
+        <button class="btn btn-primary" type="submit">Обновить</button>
+    </div>    
+</form>
+
+{% for c in clist %}
+    
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Чек-лист: {{ c.name }}</th>                
+            </tr>
+        </thead>
+        
+        <tbody class="table-info table-hover">
+        {% for t in tlist %}
+
+            {% if c.id == t.taskjobtitlelink.id %}                
+
+                {% if t.status %}
+                    <tr class="table-info table-hover">
+                    <td>{{ t.tasklink }}</td>
+                    <td>{{ t.time_control|time:"H:i" }}</td>
+                    <td>{{ t.user_exe }}</td>
+                    <td>{{ t.time_exe|time:"H:i" }}</td>
+                    </tr>
+                {% else %}
+                    <tr class="table-danger table-hover">
+                    <td>{{ t.tasklink }}</td>
+                    <td>{{ t.time_control|time:"H:i" }}</td>
+                    <td></td>
+                    <td></td>
+                    </tr>
+            {% endif %}                
+
+            {% endif %}
+
+        {% endfor %}
+        </tbody>
+
+    </table>
+
+{% endfor %}
+
+{% endblock %}
+

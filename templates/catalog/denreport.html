@@ -1,0 +1,325 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+<table class="table table-bordered border-primary" style="width: 100%;">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<form action="{% url 'DenReport' %}" method="post">
+    {% csrf_token %}
+    
+    <table class="table table-hover" style="width: 100%;">
+        <thead>
+            <tr>
+                <th style="width: 80px; text-align: center; vertical-align: top;">
+                    <div>
+                        <label for="id_b_date">Период с: </label>
+                        <input id="id_b_date" type="date" value={{begindate}} required id="" name="b_date">
+
+                        <p> </p>
+
+                        <label for="id_e_date"> по: </label>
+                        <input id="id_e_date" type="date" value={{enddate}} required id="" name="e_date">
+
+                        <p></p>    
+                    </div>
+                </th>                
+            </tr>
+        <tr>
+            <div class="d-grid gap-2 col-6 mx-auto">
+                <button class="btn btn-primary" type="submit">Обновить</button>
+            </div>                        
+        </tr>
+        </thead>
+    </table>
+
+{{ form.as_p }}
+
+<style>
+table {
+font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+font-size: 13px;
+border-radius: 15px;
+border-spacing: 0;
+text-align: center;
+}
+th {
+background: #BCEBDD;
+color: rgb(5, 5, 5);
+/*text-shadow: 0 1px 1px #2D2020;*/
+padding: 10px 20px;
+font-weight: normal;
+text-align: center;
+}
+th, td {
+border-style: solid;
+border-width: 0 2px 2px 0;
+border-color: white;
+}
+th:first-child, td:first-child {
+text-align: left;
+}
+th:first-child {
+border-top-left-radius: 10px;
+}
+th:last-child {
+border-top-right-radius: 10px;
+border-right: none;
+}
+td {
+padding: 10px 20px;
+background: #fdf2c4;
+}
+tr:last-child td:first-child {
+border-radius: 0 0 0 10px;
+}
+tr:last-child td:last-child {
+border-radius: 0 0 10px 0;
+}
+tr td:last-child {
+border-right: none;
+}    
+</style>
+
+<table style="width: 100%;">
+
+{% for r in rep %}
+{% if r.rflag == 1 %}
+    <tr>
+      <th style="width: 16%; font-weight: bold;">{{r.date|date:"d-m-Y"}}</th>
+      <th style="width: 16%; font-weight: bold;">Выручка</th>
+      <th style="width: 16%; font-weight: bold;">К.час</th>
+      <th style="width: 16%; font-weight: bold;">К.гость</th>
+      <th style="width: 16%; font-weight: bold;">Чай %</th>
+      <th style="width: 16%; font-weight: bold;">Чай</th>
+    </tr>
+    <tr>
+        <td>EL GUSTO</td>
+        <td>{{r.v_e}}</td>
+        
+        {% if r.ck_e == 0 %}
+            <td style="background-color: rgb(248, 116, 182);">{{r.kc_e}}</td>
+        {% endif %}
+        
+        {% if r.ck_e == 1 %}
+            <td>{{r.kc_e}}</td>
+        {% endif %}
+                
+        {% if r.ck_e == 2 %}
+           <td style="background-color: rgb(116, 248, 182);">{{r.kc_e}}</td>
+        {% endif %}    
+
+        <td>{{r.kg_e}}</td>
+
+        {% if r.cc_e == 0 %}
+            <td style="color: rgb(255, 255, 255); background-color: rgb(0, 0, 0);">{{r.ch_e}}</td>
+            <td style="color: rgb(255, 255, 255); background-color: rgb(0, 0, 0);">{{r.kb_e}}</td>
+        {% endif %}
+
+        {% if r.cc_e == 1 %}
+            <td style="background-color: rgb(248, 116, 182);">{{r.ch_e}}</td>
+            <td style="background-color: rgb(248, 116, 182);">{{r.kb_e}}</td>
+        {% endif %}
+
+        {% if r.cc_e == 2 %}
+            <td>{{r.ch_e}}</td>
+            <td>{{r.kb_e}}</td>
+        {% endif %}
+
+        {% if r.cc_e == 3 %}
+            <td style="background-color: rgb(116, 248, 182);">{{r.ch_e}}</td>
+            <td style="background-color: rgb(116, 248, 182);">{{r.kb_e}}</td>
+        {% endif %}        
+    </tr>
+    <tr>
+        <td>Марта</td>
+        <td>{{r.v_m}}</td>
+
+        {% if r.ck_m == 0 %}
+            <td style="background-color: rgb(248, 116, 182);">{{r.kc_m}}</td>
+        {% endif %}
+        
+        {% if r.ck_m == 1 %}
+            <td>{{r.kc_m}}</td>
+        {% endif %}
+                
+        {% if r.ck_m == 2 %}
+           <td style="background-color: rgb(116, 248, 182);">{{r.kc_m}}</td>
+        {% endif %}    
+
+        <td>{{r.kg_m}}</td>
+
+        {% if r.cc_m == 0 %}
+            <td style="color: rgb(255, 255, 255); background-color: rgb(0, 0, 0);">{{r.ch_m}}</td>
+            <td style="color: rgb(255, 255, 255); background-color: rgb(0, 0, 0);">{{r.kb_m}}</td>
+        {% endif %}
+
+        {% if r.cc_m == 1 %}
+            <td style="background-color: rgb(248, 116, 182);">{{r.ch_m}}</td>
+            <td style="background-color: rgb(248, 116, 182);">{{r.kb_m}}</td>
+        {% endif %}
+
+        {% if r.cc_m == 2 %}
+            <td>{{r.ch_m}}</td>
+            <td>{{r.kb_m}}</td>
+        {% endif %}
+
+        {% if r.cc_m == 3 %}
+            <td style="background-color: rgb(116, 248, 182);">{{r.ch_m}}</td>
+            <td style="background-color: rgb(116, 248, 182);">{{r.kb_m}}</td>
+        {% endif %}
+        
+    </tr>
+    <tr>
+        <td style="font-weight: bold;">Итог</td>
+        <td style="font-weight: bold;">{{r.v_em}}</td>
+
+        {% if r.ck_em == 0 %}
+            <td style="font-weight: bold; background-color: rgb(248, 116, 182);">{{r.kc_em}}</td>
+        {% endif %}
+        
+        {% if r.ck_em == 1 %}
+            <td style="font-weight: bold;">{{r.kc_em}}</td>
+        {% endif %}
+                
+        {% if r.ck_em == 2 %}
+           <td style="font-weight: bold; background-color: rgb(116, 248, 182);">{{r.kc_em}}</td>
+        {% endif %}    
+
+        <td style="font-weight: bold;">{{r.kg_em}}</td>
+
+        {% if r.cc_em == 0 %}
+            <td style="color: rgb(255, 255, 255); background-color: rgb(0, 0, 0);">{{r.ch_em}}</td>
+            <td style="color: rgb(255, 255, 255); background-color: rgb(0, 0, 0);">{{r.kb_em}}</td>
+        {% endif %}
+
+        {% if r.cc_em == 1 %}
+            <td style="background-color: rgb(248, 116, 182);">{{r.ch_em}}</td>
+            <td style="background-color: rgb(248, 116, 182);">{{r.kb_em}}</td>
+        {% endif %}
+
+        {% if r.cc_em == 2 %}
+            <td>{{r.ch_em}}</td>
+            <td>{{r.kb_em}}</td>
+        {% endif %}
+
+        {% if r.cc_em == 3 %}
+            <td style="background-color: rgb(116, 248, 182);">{{r.ch_em}}</td>
+            <td style="background-color: rgb(116, 248, 182);">{{r.kb_em}}</td>
+        {% endif %}
+
+    </tr>
+{% endif %}
+{% endfor %}    
+
+<!-- Выводим итог -->
+{% if itflag == 1 %}
+<tr>
+    <th style="width: 16%; font-weight: bold;background-color: rgb(255, 0, 0);color: bisque;font-size: 15px;">Общий итог:</th>
+    <th style="width: 16%; font-weight: bold;background-color: rgb(255, 0, 0);color: bisque;font-size: 15px;">Выручка</th>
+    <th style="width: 16%; font-weight: bold;background-color: rgb(255, 0, 0);color: bisque;font-size: 15px;">К.час</th>
+    <th style="width: 16%; font-weight: bold;background-color: rgb(255, 0, 0);color: bisque;font-size: 15px;">К.гость</th>
+    <th style="width: 16%; font-weight: bold;background-color: rgb(255, 0, 0);color: bisque;font-size: 15px;">Чай %</th>
+    <th style="width: 16%; font-weight: bold;background-color: rgb(255, 0, 0);color: bisque;font-size: 15px;">Чай</th>
+</tr>
+<tr>
+    <td style="font-size: 15px;">EL GUSTO</td>
+    <td style="font-size: 15px;">{{ast.av_e}}</td>
+    <td style="font-size: 15px;">{{ast.ak_e}}</td>
+    <td style="font-size: 15px;">{{ast.ag_e}}</td>
+    <td style="font-size: 15px;">{{ast.acp_e}}</td>
+    <td style="font-size: 15px;">{{ast.ac_e}}</td>
+
+</tr>
+<tr>
+    <td style="font-size: 15px;">Марта</td>
+    <td style="font-size: 15px;">{{ast.av_m}}</td>
+    <td style="font-size: 15px;">{{ast.ak_m}}</td>
+    <td style="font-size: 15px;">{{ast.ag_m}}</td>
+    <td style="font-size: 15px;">{{ast.acp_m}}</td>
+    <td style="font-size: 15px;">{{ast.ac_m}}</td>    
+</tr>
+<tr>
+    <td style="font-weight: bold; font-size: 15px;">Всего</td>
+    <td style="font-weight: bold; font-size: 15px;">{{ast.av_em}}</td>
+    <td style="font-weight: bold; font-size: 15px;">{{ast.ak_em}}</td>
+    <td style="font-weight: bold; font-size: 15px;">{{ast.ag_em}}</td>
+    <td style="font-weight: bold; font-size: 15px;">{{ast.acp_em}}</td>
+    <td style="font-weight: bold; font-size: 15px;">{{ast.ac_em}}</td>
+</tr>
+{% endif %}
+
+</table>
+
+</form>
+
+<div class="modal fade" id="TabelDescription" tabindex="-1" aria-labelledby="TabelModalLabel" aria-hidden="true">
+    <div class="modal-dialog vertical-align-center">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="TabelModalLabel">Tabel Preview:</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+    </div>
+</div>
+
+<script>
+
+const exampleModal = document.getElementById('TabelDescription')
+const modalBody = document.getElementById('modal-body')
+exampleModal.addEventListener('show.bs.modal', event => {
+
+// Icon that triggered the modal
+const button = event.relatedTarget
+// Extract info from data-bs-* attributes
+const recipient = button.getAttribute('data-bs-whatever')
+const tabelname = button.getAttribute('data-bs-name')
+const bdate = button.getAttribute('data-bs-bdate')
+const edate = button.getAttribute('data-bs-edate')
+const docs = button.getAttribute('data-bs-docs')
+const modalTitle = exampleModal.querySelector('.modal-title')
+modalTitle.textContent = `${tabelname}`
+
+var ht=`<div style="text-align: center;">
+    Период с: <span style="color: rgb(21, 90, 240); font-size: 14px; font-weight: bold;">${bdate}</span> по: <span style="color: rgb(21, 90, 240); font-size: 14px; font-weight: bold;">${edate}</span>
+    <br></br>
+    </div>`;
+
+    if (docs != ''){
+      var r = `<div><i style="font-weight: bold;">Записи по табелю:</i><br>`;
+
+      r += docs;
+      r += `</div>`;
+
+      ht += r;
+    }
+
+modalBody.innerHTML = ht;
+    
+})
+
+</script>  
+
+{% endblock %}

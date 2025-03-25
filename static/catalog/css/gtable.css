@@ -1,0 +1,37 @@
+.container {
+    width: 100%;
+    height: 100%;
+    overflow-x: scroll;
+    overflow-y: scroll;
+}
+
+.gtable {
+    width: 100%;
+    height: 100%;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+.gtable th, .gtable td {
+	border: 1px solid #888;
+	padding: 10px;
+	text-align: center;
+	vertical-align: middle;
+	position: relative;
+    font-size: 10px;
+    width: 100px;
+}
+ 
+.gtable td:hover {
+	background: #fffabe;
+    font-size: 10px;
+    width: 100px;
+}
+.gtable td:hover:after {
+	/*content: '';*/
+	position: absolute;
+	top: 0px;
+	right: 0px; 
+	bottom: 0px;    
+	left: 0px;
+	border: 3px solid orange;
+}

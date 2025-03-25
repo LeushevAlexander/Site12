@@ -1,0 +1,277 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+<!-- <script src="{% static 'catalog/chart.js/dist/chart.umd.js' %}"></script> -->
+
+{% block content %}
+
+<!-- <script type="text/javascript" src="http://www.chartjs.org/assets/Chart.js"></script> -->
+
+<table class="table table-bordered border-primary" style="width: 100%;">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<form action="{% url 'DenDiagramm' %}" method="post">
+    {% csrf_token %}
+    
+    <table class="table table-hover" style="width: 100%;">
+        <thead>
+            <tr>
+                <th style="width: 80px; text-align: center; vertical-align: top;">
+                    <div>
+                        <label for="id_b_date">Период с: </label>
+                        <input id="id_b_date" type="date" value={{bdate}} required id="" name="b_date">
+
+                        <p> </p>
+
+                        <label for="id_e_date"> по: </label>
+                        <input id="id_e_date" type="date" value={{edate}} required id="" name="e_date">
+
+                        <p></p>    
+                    </div>
+                </th>                
+            </tr>
+            <tr>
+                <th>
+                    <div>
+                        <label for="id_obj">Объект:</label>
+                        <select id="id_obj" class="form-select" name='ob_field' style="width: 120px; text-align: center;">                    
+                            {%for e in omas%}                            
+                                {% if e.id != objset %}
+                                    <option value={{e.id}}>{{e.name}}</option>  
+                                {% else %}
+                                    <option value={{e.id}} selected={{e.id}}>{{e.name}}</option> 
+                                {% endif %}
+                            {% endfor %}
+                        </select>                                                
+                    </div>                                               
+                </th>
+            </tr>
+        <tr>
+            <div class="d-grid gap-2 col-6 mx-auto">
+                <button class="btn btn-primary" type="submit">Обновить</button>
+                <!-- <button class="btn btn-primary" onclick="buttonReloadClick ()">Обновить</button> -->
+            </div>                        
+        </tr>
+        </thead>
+
+        <div style="display: none;">
+
+            <input id="allv" type="numeric" value={{masdata.allv}} name="allv">  
+            <input id="allk" type="numeric" value={{masdata.allk}} name="allk">  
+            <input id="all_nm" type="numeric" value={{masdata.nm}} name="all_nm">  
+
+            {% for e in masdata.data%}
+
+                <input id="num_{{e.n}}" type="numeric" value={{e.n}} name="num_{{e.n}}">  
+                <input id="name_{{e.n}}" type="text" value={{e.name}} name="name_{{e.n}}">  
+                <input id="v_{{e.n}}" type="numeric" value={{e.v}} name="v_{{e.n}}">  
+                <input id="k_{{e.n}}" type="numeric" value={{e.k}} name="v_{{e.n}}"> 
+
+            {% endfor%}
+
+        </div>
+
+    </table>
+
+<!-- {{ form.as_p }} -->
+
+    <div style="width: 100%; margin: 20px auto 0;">
+
+        <canvas id="ChartDen"></canvas>
+
+    </div>
+
+</form>
+
+
+<script>
+
+const ReqData = async function(url) {
+  
+const response = await fetch(url, {referrerPolicy: "origin"});
+const res = await response.json();  
+ 
+console.log(res['masdata']);  
+console.log(res['names']);  
+console.log(res['values']);  
+
+return (res)
+
+}
+
+const buttonReloadClick = () => {
+    // var pieData = [
+    // {
+    //     value: 25,
+    //     label: 'Java',
+    //     color: '#811bd6'
+    // },
+    // {
+    //     value: 10,
+    //     label: 'Scala',
+    //     color: '#9cbaba'
+    // },
+    // {
+    //     value: 35,
+    //     label: 'HTML',
+    //     color: '#6ae128'
+    // }
+    // ]    
+
+    //const gorv = document.getElementById('id_gorv').value;
+    //const holv = document.getElementById('id_holv').value;
+    //const pizv = document.getElementById('id_pizv').value;
+    //const desv = document.getElementById('id_desv').value;
+    //const alkv = document.getElementById('id_alkv').value;
+    
+    //const data = {    
+
+    //labels: [
+    //   'Горячее',
+    //   'Холодное',
+    //   'Пицца',
+    //   'Дессерт',
+    //   'Алкоголь',
+    //],
+
+    //datasets: [{
+    //   label: 'Выручка',
+    //   data: [gorv, holv, pizv, desv, alkv],        
+    //   hoverOffset: 4,
+    //}]
+    //};
+
+
+    // загружаем данные из базы
+    const bdate = document.getElementById('id_b_date')
+    const edate = document.getElementById('id_e_date')
+    const ob = document.getElementById('id_obj')
+ 
+    bd = bdate.value;
+    ed = edate.value;
+    obid = ob.value;
+
+    let lab = []
+    let dts = []
+
+    u = '/dendiagrammround/' + obid + '/' + bd + '/' + ed + '/'; 
+
+    let res = ReqData (u)    
+    console.log(res);  
+
+    let r = res['masdata'];  
+    console.log(r);  
+    
+    let n = res['names'];  
+    console.log(n);  
+
+    let v = res['values'];  
+    console.log(v);  
+
+    // распаковываем json
+    //const ddata = res['masdata']
+    // console.log('размер массива:');  
+    // console.log(r.length);  
+
+    for (index = 0; index < r.length; ++index) {
+
+        let l = r[index]
+
+        // for (const [key, value] of Object.entries(l)) {
+        //     console.log(`${key}: ${value}`);
+            
+        //     lab[index] = value;    
+        //     dts[index] = value;    
+        // }
+
+        // lab[index] = ddata[index].name;
+        // dts[index] = ddata[index].v;
+        //console.log(l);
+    }
+
+    const data = {    
+
+    labels: lab,
+
+    datasets: [{
+      label: 'Выручка',
+      data: dts,        
+      hoverOffset: 4,
+    }]
+    };
+
+    const ctx = document.getElementById('ChartDen')
+    const Chart1 = new Chart(ctx, {
+        type: 'pie',
+        data: data,
+    }); 
+
+}
+
+// выводим диаграмму
+// заполняем данные из html страницы
+const lab = []
+const dts = []
+
+const nmb = document.getElementById('all_nm')
+const nm = Number (nmb.value)
+
+console.log(nm);
+
+for (i = 0; i < nm; ++i) {
+
+    let s = 'name_';
+    let sv = 'v_';
+    let sk = 'k_';
+
+    let s1 = String (i);
+    s = s + s1;
+    sv = sv + s1;
+    
+    let el = document.getElementById(s);
+    lab[i] = el.value;
+    let elv = document.getElementById(sv);
+    dts[i] = elv.value;
+
+}
+
+const data = {    
+
+labels: lab,
+
+datasets: [{
+  label: 'Выручка',
+  data: dts,        
+  hoverOffset: 4,
+}]
+};
+
+const ctx = document.getElementById('ChartDen')
+const Chart1 = new Chart(ctx, {
+    type: 'pie',
+    data: data,
+    options: {
+        animation: {
+            duration: 1500,
+            easing: 'easeOutBounce'
+        }
+    }
+}); 
+
+</script>  
+
+{% endblock %}

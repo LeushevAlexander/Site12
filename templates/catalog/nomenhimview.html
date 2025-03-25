@@ -1,0 +1,680 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+{% load static %}
+
+<link type="text/css" href="{% static 'catalog/css/btable.css' %}" rel="stylesheet"/>
+
+<style>
+.addelement {
+	display: inline-block; /* Строчно-блочный элемент */
+    position: relative; /* Относительное позиционирование */
+}
+
+.addelement:hover::after {
+    content: attr(data-title); /* Выводим текст */
+    position: absolute; /* Абсолютное позиционирование */
+    left: 20%; top: 30%; /* Положение подсказки */
+    z-index: 1; /* Отображаем подсказку поверх других элементов */
+    background: rgba(255,255,230,0.9); /* Полупрозрачный цвет фона */
+    font-family: Arial, sans-serif; /* Гарнитура шрифта */
+    font-size: 11px; /* Размер текста подсказки */
+    padding: 5px 10px; /* Поля */
+    border: 1px solid #333; /* Параметры рамки */
+}
+</style>
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<form action="{% url 'NomenHimView' %}" method="post">
+
+    {% csrf_token %}
+    
+    {{ form.as_p }}
+
+    <table>
+        <tr>
+            <th style="width: 80px;">
+                <div class="addelement" data-title="Добавить номенклатуру" style="cursor: pointer; padding-left: 10px; padding-bottom: 15px; display: inline-block;" data-bs-toggle="modal" data-bs-target="#AddQuestion">
+                    <img width="60px" height="60px" src="{% static 'catalog/images/addbanket.png'%}"> 
+                </div>
+            </th>
+            <th style="width: 260px;">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-filter" style="width: 80px;">Фильтр:</span>
+                    <input style="width: 60px;" id="filter_name" type="text" value="{{filterstr}}" class="form-control" aria-describedby="basic-filter" name="filter_name">
+                    <button class="btn btn-outline-secondary" type="submit" id="button-addon2" style="width: 70px;">Отбор</button>
+                </div>                    
+            </th>
+        </tr>
+    </table>
+
+    <div class="container">
+        <table class="gtable" style="table-layout: fixed;">
+        <thead class="gtable.th">
+            <tr>
+                <th class="gtable.th" style="background-color: aquamarine; font-size: 14px; font-weight: bold; width: 100px;">
+                    ID
+                </th>
+
+                <th class="gtable.th" style="background-color: aquamarine; font-size: 14px; font-weight: bold; width: 200px;">
+                    Наименование
+                </th>
+             
+                <th class="gtable.th" style="background-color: aquamarine; font-size: 14px; font-weight: bold; width: 60px;">
+                    Е.И.
+                </th>
+
+                <th class="gtable.th" style="background-color: aquamarine; font-size: 14px; font-weight: bold; width: 80px;">
+                    Цена
+                </th>
+
+                <th class="gtable.th" style="background-color: aquamarine; font-size: 14px; font-weight: bold; width: 110px;">
+                    Место закупа
+                </th>
+            </tr>
+        </thead>
+        
+        <tbody>
+
+            {% for i in nmas %}
+
+                <tr>
+                    <td class="gtable.td" style="font-size: large;">
+                        {{i.pk}}
+
+                        <div style="cursor: pointer; display: inline-block;"
+                            data-bs-toggle="modal" data-bs-target="#EditQuestion" data-bs-whatever="{{i.pk}}" 
+                            data-bs-cost="{{i.cost}}" data-bs-name="{{i.name}}"
+                            data-bs-ei="{{i.ei.pk}}" data-bs-source="{{i.source_link.pk}}"
+                            data-bs-voplpos="{{i.vopl}}" data-bs-voplppos="{{i.voplp}}">
+                            <img width="35px" height="35px" src="{% static 'catalog/images/EditIcon.jpg'%}"> 
+                        </div>
+
+                    </td>                    
+
+                    <td class="gtable.td" style="text-align: left;">
+                        {{i.name}}
+                    </td>
+
+                    <td class="gtable.td">
+                        {{i.ei.name}}
+                    </td>
+
+                    <td class="gtable.td">
+                        {{i.cost}}
+                    </td>
+                    <td class="gtable.td">
+                        {{i.source_link.name}}
+                    </td>
+                </tr>
+
+            {% endfor %}
+
+        </tbody>
+        </table>
+    </div>
+
+</form>
+
+<div class="modal fade" id="DelQuestion" tabindex="-1" aria-labelledby="DelQuestionLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header"><img width="35px" height="35px" src="{% static 'catalog/images/DelIcon.png'%}" style="padding-right: 10px;">
+          <h1 class="modal-title fs-5" id="DelQuestionLabel">Nomen Preview:</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body">
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-danger" data-bs-dismiss="modal" onclick="buttonDelClick({{i.record.pk}})">Удалить</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="EditQuestion" tabindex="-1" aria-labelledby="EditQuestionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header"><img width="35px" height="35px" src="{% static 'catalog/images/EditIcon.jpg'%}" style="padding-right: 10px;">
+          <h1 class="modal-title fs-5" id="EditQuestionLabel">Nomen Preview:</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body_edit">
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" onclick="buttonEditClick()">Изменить</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>            
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AddQuestion" tabindex="-1" aria-labelledby="AddQuestionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header"><img width="35px" height="35px" src="{% static 'catalog/images/CopyIcon.webp'%}" style="padding-right: 10px;">
+            <h1 class="modal-title fs-5" id="AddQuestionLabel">Nomen Preview:</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body_add">
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-info" data-bs-dismiss="modal" onclick="buttonAddClick()">Создать</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="InfoQuestion" tabindex="-1" aria-labelledby="InfoQuestionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header"><img width="45px" height="45px" src="{% static 'catalog/images/search.jpeg'%}" style="padding-right: 10px;">
+            <h1 class="modal-title fs-5" id="InfoQuestionLabel">Preview:</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body_info">
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script>
+
+const exampleModal = document.getElementById('DelQuestion')
+    const modalBody = document.getElementById('modal-body')
+    exampleModal.addEventListener('show.bs.modal', event => {
+    
+    const button = event.relatedTarget
+    const recipient = button.getAttribute('data-bs-whatever')
+    const cost = button.getAttribute('data-bs-cost')
+    const name = button.getAttribute('data-bs-name')
+    const modalTitle = exampleModal.querySelector('.modal-title')
+    modalTitle.textContent = "Удалить запись номенклатуры ?"
+
+    // Сдесь я сам делаю HTML для отображения информации по удалению записи банкета
+    modalBody.innerHTML = `<div>
+            <table class="table-warning table-hover" style="width: 100%">             
+                <tr style="height: 20px; text-align: center; font-weight: bold; background-color: rgb(247, 240, 180); 
+                    padding: 10px; width: 100%">
+                    <td colspan="4" style="padding: 10px;">
+                        Дата: ${infodt}
+                    </td>
+                </tr>   
+                <tr style="height: 20px; text-align: left; background-color: rgb(247, 240, 180);">
+                    <td colspan="4" style="padding: 10px;">
+                        Объект: <b><u>${objname}</u></b>
+                    </td>
+                </tr>   
+                <tr style="height: 20px; text-align: left; background-color: rgb(247, 240, 180);">
+                    <td colspan="4" style="padding: 10px;">
+                        Заказчик: <b><u>${customer}</u></b>
+                    </td>
+                </tr>   
+                <tr style="height: 20px; text-align: left; background-color: rgb(247, 240, 180);">
+                    <td colspan="4" style="padding: 10px;">
+                        Сумма: <b><u>${sum}</u></b>
+                    </td>
+                </tr>   
+                <tr style="height: 20px; text-align: center; background-color: rgb(248, 194, 149);">
+                    <td colspan="4" style="padding: 10px;">
+                        Удалить запись ?<div><input style="display: none;" type=text id="BPK" value=${recipient}></div>
+                    </td>
+                </tr>    
+            </table>
+            `;
+            
+    })
+
+    const EditModal = document.getElementById('EditQuestion')
+    const EditBody = document.getElementById('modal-body_edit')
+    EditModal.addEventListener('show.bs.modal', event => {
+    
+    const button = event.relatedTarget
+    const recipient = button.getAttribute('data-bs-whatever')
+    const cost = button.getAttribute('data-bs-cost')
+    const name = button.getAttribute('data-bs-name')
+    const eipos = button.getAttribute('data-bs-ei')
+    const sourcepos = button.getAttribute('data-bs-source')
+
+    const modalTitle = EditModal.querySelector('.modal-title')
+    modalTitle.textContent = "Изменение в номенклатуре"
+
+    const ei = Number(eipos)
+    const source = Number(sourcepos)
+
+    // Сдесь я сам делаю HTML для отображения информации по изменению номенклатуры
+    EditBody.innerHTML = `<div>
+            <table class="table-warning table-hover">             
+                <tr style="height: 20px;">
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-edit16">Наименование:</span>
+                            <input id="edit_name" type="text" value="${name}" class="form-control" aria-describedby="basic-edit16" name="edit_name">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="edit_ei">Единица измер.:</label>
+                            <select id="edit_ei" class="form-select" name='edit_ei' style="text-align: left;">
+                                {%for e in emas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="edit_source">Место закупа:</label>
+                            <select id="edit_source" class="form-select" name='edit_source' style="text-align: left;">
+                                {%for e in smas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-edit2">Цена:</span>
+                            <input id="edit_cost" type="number" min="0" value="${cost}" class="form-control" aria-describedby="basic-edit2" name="edit_cost">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+            </table>
+            <div class="mb-3">
+                      <input style="display: none" type=text id="BPK1" value="${recipient}" ></input>
+                </div>
+            </div>
+            `;
+        
+        let selectElement = document.getElementById('edit_ei');
+        selectElement.value = ei;
+        let selectElement1 = document.getElementById('edit_source');
+        selectElement1.value = source;
+            
+    })
+
+    const AddModal = document.getElementById('AddQuestion')
+    const AddBody = document.getElementById('modal-body_add')
+    AddModal.addEventListener('show.bs.modal', event => {
+    
+    const button = event.relatedTarget
+    const recipient = '0'
+    const cost = '0'
+    const name = ''
+
+    const modalTitle = AddModal.querySelector('.modal-title')
+    modalTitle.textContent = "Создание номенклатуры"
+
+    const ei = Number(1)
+    const source = Number(1)
+
+    // Сдесь я сам делаю HTML для отображения информации по созданию номенклатуры
+    AddBody.innerHTML = `<div>
+            <table class="table-warning table-hover">             
+
+                <tr style="height: 20px;">
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon16">Наименование:</span>
+                            <input id="add_name" type="text" value="${name}" class="form-control" aria-describedby="basic-addon16" name="add_name">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="add_ei">Единица измер.:</label>
+                            <select id="add_ei" class="form-select" name='add_ei' style="text-align: left;">
+                                {%for e in emas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="add_source">Место закупа:</label>
+                            <select id="add_source" class="form-select" name='add_source' style="text-align: left;">
+                                {%for e in smas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon2">Цена:</span>
+                            <input id="add_cost" type="number" min="0" value="${cost}" class="form-control" aria-describedby="basic-addon2" name="add_cost">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+            </table>
+            <div class="mb-3">
+                      <input style="display: none" type=text id="BPK0" value="${recipient}"></input>
+                </div>
+            </div>
+            `;
+        
+        let selectElement = document.getElementById('add_ei');
+        selectElement.value = ei;
+        let selectElement1 = document.getElementById('add_source');
+        selectElement1.value = source;
+          
+    })
+
+    const InfoModal = document.getElementById('InfoQuestion')
+    const InfoBody = document.getElementById('modal-body_info')
+    InfoModal.addEventListener('show.bs.modal', event => {
+    
+    const button = event.relatedTarget
+    const recipient = button.getAttribute('data-bs-whatever')
+    const sum = button.getAttribute('data-bs-sum')
+    const infodt = button.getAttribute('data-bs-dt')
+    const vmerpos = button.getAttribute('data-bs-vmerpos')
+    const kolg = button.getAttribute('data-bs-kolg')
+    const customer = button.getAttribute('data-bs-customer')
+    const contact = button.getAttribute('data-bs-contact')
+    const objpos = button.getAttribute('data-bs-objpos')
+    const voplpos = button.getAttribute('data-bs-voplpos')
+    const predoplata = button.getAttribute('data-bs-predoplata')
+    const voplppos = button.getAttribute('data-bs-voplppos')
+    const ssbor = button.getAttribute('data-bs-ssbor')
+    const psbor = button.getAttribute('data-bs-psbor')
+    const remark = button.getAttribute('data-bs-remark')
+
+    const modalTitle = InfoModal.querySelector('.modal-title')
+    modalTitle.textContent = "Информация по записи банкета"
+
+    const vmer = Number(vmerpos)
+    const obj = Number(objpos)
+    const vopl = Number(voplpos)
+    const voplp = Number(voplppos)
+    
+    // Сдесь я сам делаю HTML для отображения информации по банкету
+    InfoBody.innerHTML = `<div>
+            <table class="table-warning table-hover">             
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon21">Дата:</span>
+                            <input id="info_date" type="date" value="${infodt}" class="form-control" aria-describedby="basic-addon21" value={{bdate}}  name="info_date" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="info_vmer">Мероприятие:</label>
+                            <select id="info_vmer" class="form-select" name='info_vmer' style="text-align: left;" disabled>
+                                {%for e in mmas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="info_obj">Объект:</label>
+                            <select id="info_obj" class="form-select" name='info_obj' style="text-align: left;" disabled>
+                                {%for e in omas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+                {% if request.user.A_BanketFin %}
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon22">Сумма:</span>
+                            <input id="info_sum" type="number" min="0" value="${sum}" class="form-control" aria-describedby="basic-addon22" name="info_sum" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="info_vopl">Вид оплаты:</label>
+                            <select id="info_vopl" class="form-select" name='info_vopl' style="text-align: left;" disabled>
+                                {%for e in vmas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon23">Количество гостей:</span>
+                            <input id="info_kolg" type="number" min="0" value="${kolg}" class="form-control" aria-describedby="basic-addon3" name="info_kolg" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+                {% if request.user.A_BanketFin %}
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon24">Предоплата:</span>
+                            <input id="info_predoplata" type="number" min="0" value="${predoplata}" class="form-control" aria-describedby="basic-addon24" name="info_predoplata" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="info_voplp">Вид  предоплаты:</label>
+                            <select id="info_voplp" class="form-select" name='info_voplp' style="text-align: left;" disabled>
+                                {%for e in vmas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon25">Серв. сбор:</span>
+                            <input id="info_ssbor" ttype="number" min="0" value="${ssbor}" class="form-control" aria-describedby="basic-addon25" name="info_ssbor" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon26">Проб. сбор:</span>
+                            <input id="info_psbor" type="text" value="${psbor}" class="form-control" aria-describedby="basic-addon26" name="info_psbor" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+                {% endif %}
+
+                <tr style="height: 20px;">
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon216">Заказчик:</span>
+                            <input id="info_customer" type="text" value="${customer}" class="form-control" aria-describedby="basic-addon216" name="info_customer" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon218">Контакт:</span>
+                            <input id="info_contact" type="text" value="${contact}" class="form-control" name="info_contact" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+                
+                <tr>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon29">Комментарий:</span>
+                            <textarea id="info_remark" type="text" rows="4" class="form-control" name="info_remark" disabled>${remark}</textarea>
+                        </div>
+                    </td>
+                </tr>
+
+            </table>
+            <div class="mb-3">
+                      <input style="display: none" type=text id="BPK2" value="${recipient}"></input>
+                </div>
+            </div>
+            `;
+        
+        let selectElement = document.getElementById('info_vmer');
+        selectElement.value = vmer;
+
+        let selectObj = document.getElementById('info_obj');
+        selectObj.value = obj;
+
+        let selectVidopl = document.getElementById('info_vopl');
+        selectVidopl.value = vopl;
+
+        let selectVidoplp = document.getElementById('info_voplp');
+        selectVidoplp.value = voplp;
+            
+    })
+
+async function req (ur) {
+    
+    let url = ur;
+    console.log(url);
+
+    let response = await fetch(url, {referrerPolicy: "origin"});
+    
+}    
+
+async function req_data (ur, dt) {
+    
+    let url = ur;
+    let data = dt;
+
+    const csrftoken = '{{ csrf_token }}'
+
+    console.log(url);
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify(data),
+    })
+    const result = await response.text()
+    return result    
+
+} 
+
+
+const buttonDelClick = (bpk) => {
+    
+    const banket_pk = document.getElementById('BPK').value;
+
+    let url = "/banketrecdel/" + banket_pk + "/";
+    console.log(url);    
+    req(url);
+    location.reload();
+}    
+
+const buttonEditClick = () => {
+
+    const url = '/nomenhimrecedit/'
+    
+    const b_name = document.getElementById('edit_name').value;
+    const b_ei = document.getElementById('edit_ei').value;
+    const b_source = document.getElementById('edit_source').value;
+    const b_cost = document.getElementById('edit_cost').value;
+    const b_pk = document.getElementById('BPK1').value;
+
+    const data = {
+        name: b_name,
+        ei: b_ei,
+        source: b_source,
+        cost: b_cost,
+        pk: b_pk,
+    };
+
+    req_data (url, data);
+    console.log(data);
+    //location.reload();
+    window.location.reload();
+}    
+
+const buttonAddClick = () => {
+    
+    const url = '/nomenhimrecadd/'
+    
+    const b_name = document.getElementById('add_name').value;
+    const b_ei = document.getElementById('add_ei').value;
+    const b_source = document.getElementById('add_source').value;
+    const b_cost = document.getElementById('add_cost').value;
+
+    const data = {
+        name: b_name,
+        ei: b_ei,
+        source: b_source,
+        cost: b_cost,
+    };
+
+    req_data (url, data);
+    console.log(data);
+    location.reload();    
+}    
+
+</script>
+
+{% endblock %}

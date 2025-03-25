@@ -1,0 +1,10 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+<h1>{{title}}</h1>
+<ul>
+    {% for p in rec %}
+	<p>{{ p.id }} {{ p.name }} </p>
+    {% endfor %}
+</ul>
+{% endblock %}

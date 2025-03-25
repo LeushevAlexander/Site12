@@ -1,0 +1,1011 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+{% load static %}
+
+<link type="text/css" href="{% static 'catalog/css/gtable.css' %}" rel="stylesheet"/>
+
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+{% if G_edit %}
+    <div style="margin-left: 20px;">
+        <button class="btn btn-secondary" onclick='buttonGoAddGraphic()'>Добавить сотрудника</button>
+    </div>                        
+{% endif %}
+
+<form action="{% url 'GraphicView' %}" method="post">
+
+    {% csrf_token %}
+    
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th style="width: 80px; text-align: center; vertical-align: middle;">
+                    <div>
+                        <label for="id_b_date">Нач. дата: </label>
+                        <input id="id_b_date" type="date" value={{bdate}} required name="d_date1">
+                    </div>
+
+                </th>                
+                <th style="width: 80px; text-align: center; vertical-align: middle;">
+                    <div>
+                        <label for="id_e_date">Кон. дата: </label>
+                        <input id="id_e_date" type="date" value={{edate}} required name="d_date2">
+                    </div>
+                </th>
+        </tr>
+        <tr>
+            <th>
+            </th>
+            <th>
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <button class="btn btn-primary" type="submit" name="ReloadButton">Обновить</button>
+                </div>                        
+            </th>
+        </tr>
+        </thead>
+    </table>
+
+    {{ form.as_p }}
+
+<p></p>
+
+<div class="container">
+<table class="gtable"> 
+<!-- <table> -->
+<thead class="gtable.th">
+    <tr>
+    <th class="gtable.th" style="background-color: aquamarine; font-size: 12px; font-weight: bold;">
+        Дата
+    </th>
+{% for i in dmas %}
+    <th class="gtable.th" style="background-color: aquamarine; font-size: 12px; font-weight: bold;">
+        {{i.date}}</th>
+{% endfor %}
+</tr>
+<tr>
+    <th class="gtable.th" style="background-color: rgb(248, 238, 149); font-size: 12px;">
+        День</th>
+
+    {% for i in dmas %}
+
+        {% if i.dn != 5 and i.dn != 6 %}
+            {% if i.dn != 0 %}
+                <th class="gtable.th" style="background-color: rgb(247, 240, 180); font-size: 12px;">
+                    {{i.day}}</th>
+            {% else %}
+                <th class="gtable.th" style="background-color: rgb(248, 194, 149); font-size: 12px;">
+                    {{i.day}}</th>
+            {% endif %}
+        {% else %}
+                <th class="gtable.th" style="background-color: #fd434c; font-size: 12px; color: aliceblue;">
+                    {{i.day}}</th>
+        {% endif %}
+    {% endfor %}
+</tr>
+</thead>
+<tbody>
+{% for i in rmas %}
+<tr>
+    <td class="gtable.td" style="background-color: rgb(71, 157, 238); font-weight: bold; color: white; font-size: 12px; border: 1px solid #bcfdfa; border-collapse: separate;">
+        {{i.obj_name}}</td>    
+
+    {% for j in i.mas %}
+        <td class="gtable.td" style="background-color: rgb(71, 157, 238); font-weight: bold; color: white; font-size: 12px;border: 1px solid #bcfdfa; border-collapse: separate;">
+            {{j.kol}}</td>
+    {% endfor %}
+
+    {% for q in i.obj_list %}
+
+    <tr>
+        <td class="gtable.td" style="background-color: rgb(71, 238, 202); color: rgb(3, 0, 0); font-size: 12px; border-collapse: separate; border: 1px solid #245488;">
+            {{q.div_name}}</td>
+        
+        {% for t in q.mas %}
+            <td class="gtable.td" style="background-color: rgb(71, 238, 202); color: rgb(3, 0, 0); font-size: 12px; border-collapse: separate; border: 1px solid #245488;">
+            {{t.kol}}</td>
+        {% endfor %}        
+    </tr>
+        {% for l in q.sotrdata %}
+            <tr>
+                <td class="gtable.td">
+                    </td>                    
+                {% for u in l.column %}                
+                    {% if u.info %}
+                        {% if G_edit%}
+                            <td class="gtable.td">
+                                {{u.info}}<br/>
+                                <div style="cursor: pointer; display: inline-block;"
+                                    data-bs-toggle="modal" data-bs-target="#CopyQuestion" data-bs-whatever="{{u.gpk}}" 
+                                    data-bs-name="{{u.info}}" data-bs-dt="{{u.dd}}" data-bs-ddt="{{u.ddt}}"
+                                    data-bs-t1="{{u.t1}}" data-bs-t2="{{u.t2}}" data-bs-kol="{{u.kol}}" data-bs-pos="{{u.pos_pk}}"
+                                    data-bs-obj="{{u.obj}}" data-bs-div="{{u.div}}">
+                                    <img width="25px" height="25px" src="{% static 'catalog/images/CopyIcon.webp'%}"> 
+                                </div>
+                                <div style="cursor: pointer; display: inline-block;"
+                                    data-bs-toggle="modal" data-bs-target="#EditQuestion" data-bs-whatever="{{u.gpk}}" 
+                                    data-bs-name="{{u.info}}" data-bs-dt="{{u.dd}}" data-bs-ddt="{{u.ddt}}"
+                                    data-bs-t1="{{u.t1}}" data-bs-t2="{{u.t2}}" data-bs-kol="{{u.kol}}" data-bs-pos="{{u.pos_pk}}"
+                                    data-bs-obj="{{u.obj}}" data-bs-div="{{u.div}}">
+                                    <img width="25px" height="25px" src="{% static 'catalog/images/EditIcon.jpg'%}"> 
+                                </div>
+                                <div style="cursor: pointer; display: inline-block;" 
+                                    data-bs-toggle="modal" data-bs-target="#DelQuestion" data-bs-whatever="{{u.gpk}}" 
+                                    data-bs-name="{{u.info}}" data-bs-dt="{{u.dd}}">
+                                    <img width="25px" height="25px" src="{% static 'catalog/images/DelIcon.png'%}">
+                                </div>
+                            </td>
+                        {% else %}
+                            <td class="gtable.td">
+                                {{u.info}} </td>
+                        {% endif %}
+                    {% else %} </div>
+                    <td class="gtable.td">                        
+                    </td>
+                    {% endif%}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+
+    {% endfor %}
+    
+</tr>
+
+{% endfor %}
+
+</tbody>
+</table>
+</div>
+
+<p></p>
+
+<div class="container">
+    <table class="gtable"> 
+    <!-- <table> -->
+    <thead class="gtable.th">
+        <tr>
+        <th class="gtable.th" style="background-color: aquamarine; font-size: 12px; font-weight: bold;">
+            Дата
+        </th>
+    {% for i in dmas %}
+        <th class="gtable.th" style="background-color: aquamarine; font-size: 12px; font-weight: bold;">
+            {{i.date}}</th>
+    {% endfor %}
+    
+    <th class="gtable.th" colspan="2" style="background-color: aquamarine; font-size: 12px; font-weight: bold;">
+        Итог</th>
+    <!-- <th class="gtable.th" style="background-color: aquamarine; font-size: 12px; font-weight: bold;">
+            Итог</th>     -->
+    </tr>
+    <tr>
+        <th class="gtable.th" style="background-color: rgb(248, 238, 149); font-size: 12px;">
+            День</th>
+    
+        {% for i in dmas %}
+    
+            {% if i.dn != 5 and i.dn != 6 %}
+                {% if i.dn != 0 %}
+                    <th class="gtable.th" style="background-color: rgb(247, 240, 180); font-size: 12px;">
+                        {{i.day}}</th>
+                {% else %}
+                    <th class="gtable.th" style="background-color: rgb(248, 194, 149); font-size: 12px;">
+                        {{i.day}}</th>
+                {% endif %}
+                
+            {% else %}
+                <th class="gtable.th" style="background-color: #fd434c; font-size: 12px; color: aliceblue;">
+                    {{i.day}}</th>
+            {% endif %}
+        {% endfor %}
+
+        <th class="gtable.th" style="background-color: rgb(177, 220, 255); font-size: 12px; font-weight: bold;">
+            Σ Час</th>
+        <th class="gtable.th" style="background-color:  rgb(177, 220, 255); font-size: 12px; font-weight: bold;">
+            Σ Смен</th>        
+    </tr>
+    </thead>
+    <tbody id="stable" name="stable">
+
+        {% for i in smas %}
+            <tr>
+            <td class="gtable.td" style="background-color: rgb(8, 93, 172); font-weight: bold; color: white; font-size: 12px; 
+                border: 1px solid #bcfdfa; border-collapse: separate;">
+                
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="s_filter_{{i.sotr.pk}}" onclick="CheckBoxClick({{i.sotr.pk}})">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Отбор
+                    </label>
+                </div>
+                
+                {{i.sotr.name}}</td>    
+    
+            {% for j in i.sotrdata %}
+                <td class="gtable.td" style="background-color: rgb(233, 255, 250); color: rgb(0, 0, 0); font-size: 10px;
+                border: 1px solid #113d3b; border-collapse: separate;">
+                    {{j.info}} ({{j.pos}})</td>
+            {% endfor %}
+            
+            <td class="gtable.td" style="background-color:rgb(8, 93, 172); font-weight: bold; color: white; font-size: 14px; border: 1px solid #bcfdfa; border-collapse: separate;">
+                {{i.kol}}</td>
+
+            <td class="gtable.td" style="background-color: rgb(8, 93, 172); font-weight: bold; color: white; font-size: 14px; border: 1px solid #bcfdfa; border-collapse: separate;">
+                {{i.sm}}</td>
+    
+            </tr>
+
+        {% endfor %}    
+        
+    </tbody>
+    </table>
+</div>
+
+</form>
+
+<div class="modal fade" id="DelQuestion" tabindex="-1" aria-labelledby="DelQuestionLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header"><img width="35px" height="35px" src="{% static 'catalog/images/DelIcon.png'%}" style="padding-right: 10px;">
+          <h1 class="modal-title fs-5" id="DelQuestionLabel">Nomen Preview:</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body">
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-danger" data-bs-dismiss="modal" onclick="buttonDelClick({{u.gpk}})">Удалить</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="EditQuestion" tabindex="-1" aria-labelledby="EditQuestionLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header"><img width="35px" height="35px" src="{% static 'catalog/images/EditIcon.jpg'%}" style="padding-right: 10px;">
+          <h1 class="modal-title fs-5" id="EditQuestionLabel">Nomen Preview:</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body_edit">
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" onclick="buttonEditClick({{u.gpk}})">Изменить</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="CopyQuestion" tabindex="-1" aria-labelledby="CopyQuestionLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header"><img width="35px" height="35px" src="{% static 'catalog/images/CopyIcon.webp'%}" style="padding-right: 10px;">
+          <h1 class="modal-title fs-5" id="CopyQuestionLabel">Nomen Preview:</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body_copy">
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-info" data-bs-dismiss="modal" onclick="buttonCopyClick({{u.gpk}})">Копировать</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<script>
+
+const exampleModal = document.getElementById('DelQuestion')
+    const modalBody = document.getElementById('modal-body')
+    exampleModal.addEventListener('show.bs.modal', event => {
+    
+    const button = event.relatedTarget
+    const recipient = button.getAttribute('data-bs-whatever')
+    const info = button.getAttribute('data-bs-name')
+    const infodt = button.getAttribute('data-bs-dt')
+    const modalTitle = exampleModal.querySelector('.modal-title')
+    modalTitle.textContent = "Удалить из графика ?"
+
+    // Сдесь я сам делаю HTML для отображения информации по товару
+    modalBody.innerHTML = `<div>
+            <table class="table-warning table-hover" style="width: 100%">             
+                <tr style="height: 20px; text-align: center; font-weight: bold; background-color: rgb(247, 240, 180); 
+                    padding: 10px; width: 100%">
+                    <td colspan="4" style="padding: 10px;">
+                        Дата: ${infodt}
+                    </td>
+                </tr>   
+                <tr style="height: 20px; text-align: center; background-color: rgb(247, 240, 180);">
+                    <td colspan="4" style="padding: 10px;">
+                        Сотрудник: ${info}
+                    </td>
+                </tr>   
+                <tr style="height: 20px; text-align: center; background-color: rgb(248, 194, 149);">
+                    <td colspan="4" style="padding: 10px;">
+                        Удалить запись ?<div><input style="display: none;" type=text id="GPK" value=${recipient}></div>
+                    </td>
+                </tr>    
+            </table>
+            `;
+            
+    })
+
+    const EditModal = document.getElementById('EditQuestion')
+    const EditBody = document.getElementById('modal-body_edit')
+    EditModal.addEventListener('show.bs.modal', event => {
+    
+    const button = event.relatedTarget
+    const recipient = button.getAttribute('data-bs-whatever')
+    const info = button.getAttribute('data-bs-name')
+    const infodt = button.getAttribute('data-bs-dt')
+
+    const t1 = button.getAttribute('data-bs-t1')
+    const t2 = button.getAttribute('data-bs-t2')
+    const ddt = button.getAttribute('data-bs-ddt')
+    const kol = button.getAttribute('data-bs-kol')
+    const selpos = button.getAttribute('data-bs-pos')
+    const objpos = button.getAttribute('data-bs-obj')
+    const divpos = button.getAttribute('data-bs-div')
+
+    const modalTitle = EditModal.querySelector('.modal-title')
+    modalTitle.textContent = "Изменение в графике"
+
+    const sel = Number(selpos)
+    const obj = Number(objpos)
+    const div = Number(divpos)
+
+    // Сдесь я сам делаю HTML для отображения информации по графику
+    EditBody.innerHTML = `<div>
+            <table class="table-warning table-hover">             
+                <tr style="height: 20px; text-align: center; font-weight: bold; background-color: rgb(247, 240, 180); 
+                    padding: 10px; width: 100%">
+                    <td colspan="4" style="padding: 10px;">
+                        Дата: ${infodt}
+                    </td>
+                </tr>   
+                <tr style="height: 20px; text-align: center; background-color: rgb(247, 240, 180);">
+                    <td colspan="4" style="padding: 10px;">
+                        Сотрудник: ${info}
+                    </td>
+                </tr>   
+                <tr style="height: 20px; text-align: center; background-color: rgb(248, 194, 149);">
+                    <td colspan="4" style="padding: 10px;">
+                        Новые данные....
+                    </td>
+                </tr>                   
+                <tr>
+                    <td colspan="4" style="height: 10px;">
+                    </td>
+                </tr>               
+                <tr style="padding-up: 10px">
+                    <td style="font-size: 14px; vertical-align: middle; width: 10%">
+                        Дата:
+                    </td>
+                    <td style="width: 20%">
+                        <div style="text-align: right; vertical-align: top;">        
+                            <input id="edit_dt0" type="date" value=${ddt} required id="" name="edit_dt0">
+                        </div>        
+                    </td>
+                    <td style="font-size: 14px; vertical-align: middle; width: 20%; text-align: center;">
+                        Позиция:
+                    </td>
+                    <td style="font-size: 14px; vertical-align: middle; width: 30%">
+                        <select id="edit_pos0" class="form-select" name='edit_pos0' style="text-align: left;">
+                            {%for e in pmas%}
+              	                <option value={{e.id}}>{{e.name}}</option>
+                            {% endfor %}
+                        </select>                       
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="height: 10px;">
+                    </td>
+                </tr>
+                <tr style="padding-up: 10px">
+                    <td style="font-size: 14px; vertical-align: middle; width: 10%">
+                        Объект:
+                    </td>
+                    <td style="font-size: 14px; vertical-align: middle; width: 30%">
+                        <select id="edit_obj0" class="form-select" name='edit_obj0' style="text-align: left;">
+                            {%for e in omas%}
+              	                <option value={{e.id}}>{{e.name}}</option>
+                            {% endfor %}
+                        </select>                       
+                    </td>
+                    <td style="font-size: 14px; vertical-align: middle; width: 15%">
+                        Подразделение:
+                    </td>
+                    <td style="font-size: 14px; vertical-align: middle; width: 30%">
+                        <select id="edit_div0" class="form-select" name='edit_div0' style="text-align: left;">
+                            {%for e in divmas%}
+              	                <option value={{e.id}}>{{e.name}}</option>
+                            {% endfor %}
+                        </select>                       
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="height: 10px;">
+                    </td>
+                </tr>
+                <tr style="padding-up: 10px">
+                    <td style="font-size: 14px; vertical-align: middle; width: 10%">
+                        <div class="mb-3" style="width: 60px;">                
+                            Время:
+                        </div>
+                    </td>
+                    <td style="padding-left: 5px; vertical-align: middle;">
+                        <div class="mb-3" style="width: 100px;">                
+                            <input type="time" class="form-control" onchange="timeChange0(1)" name='edit_t10' id='edit_t10' value=${t1}>
+                        </div>
+                    </td>
+                    <td  style="padding-up: 20px; margin-top: 10px;">
+                        <div class="mb-3" style="width: 100px;">
+                            <input type="time" class="form-control" onchange="timeChange0(1)" name='edit_t20' id='edit_t20' value=${t2}>
+                        </div>
+                    </td>
+                    <td style="width: 60px; text-align: center; vertical-align: middle;">
+                        <div class="mb-3" style="width: 70px; padding-left: 10px;"> 
+                            <input type="text" class="form-control" name='edit_kol' id='edit_kol0' value=${kol} readonly> 
+                        </div> 
+                    </td>
+                </tr>
+            </table>
+            <div class="mb-3">
+                      <input style="display: none" type=text id="GPK0" value=${recipient} ></input>
+                </div>
+            </div>
+            `;
+        
+        let selectElement = document.getElementById('edit_pos0');
+        selectElement.value = sel;
+
+        let selectObj = document.getElementById('edit_obj0');
+        selectObj.value = obj;
+
+        let selectDiv = document.getElementById('edit_div0');
+        selectDiv.value = div;
+    
+        console.log(selectElement);
+        console.log(sel);
+
+        console.log(selectObj);
+        console.log(obj);
+
+        console.log(selectDiv);
+        console.log(div);
+            
+    })
+
+    const CopyModal = document.getElementById('CopyQuestion')
+    const CopyBody = document.getElementById('modal-body_copy')
+    CopyModal.addEventListener('show.bs.modal', event => {
+
+    const button = event.relatedTarget
+    const recipient = button.getAttribute('data-bs-whatever')
+    const info = button.getAttribute('data-bs-name')
+    const infodt = button.getAttribute('data-bs-dt')
+    const t1 = button.getAttribute('data-bs-t1')
+    const t2 = button.getAttribute('data-bs-t2')
+    const ddt = button.getAttribute('data-bs-ddt')
+    const kol = button.getAttribute('data-bs-kol')
+    const selpos = button.getAttribute('data-bs-pos')
+    const objpos = button.getAttribute('data-bs-obj')
+    const divpos = button.getAttribute('data-bs-div')
+    const modalTitle = CopyModal.querySelector('.modal-title')
+    modalTitle.textContent = "Копирование в графике"
+
+    const sel = Number(selpos)
+    const obj = Number(objpos)
+    const div = Number(divpos)
+
+    // Сдесь я сам делаю HTML для отображения информации по графику
+    CopyBody.innerHTML = `<div data-pos=${selpos}>
+            <table class="table-warning table-hover" style="width: 465px">             
+                <tr style="height: 20px; text-align: center; font-weight: bold; background-color: rgb(247, 240, 180); 
+                    padding: 10px; width: 100%">
+                    <td colspan="4" style="padding: 10px;">
+                        Дата: ${infodt}
+                    </td>
+                </tr>   
+                <tr style="height: 20px; text-align: center; background-color: rgb(247, 240, 180);">
+                    <td colspan="4" style="padding: 10px;">
+                        Сотрудник: ${info}
+                    </td>
+                </tr>   
+                <tr style="height: 20px; text-align: center; background-color: rgb(248, 194, 149);">
+                    <td colspan="4" style="padding: 10px;">
+                        Новые данные....
+                    </td>
+                </tr>    
+                <tr>
+                    <td colspan="4" style="height: 10px;">
+                    </td>
+                </tr>               
+                <tr style="padding-up: 10px">
+                    <td style="font-size: 14px; vertical-align: middle; width: 10%">
+                        Дата:
+                    </td>
+                    <td style="width: 20%">
+                        <div style="text-align: right; vertical-align: top;">        
+                            <input id="edit_dt" type="date" value=${ddt} required id="" name="edit_dt">
+                        </div>        
+                    </td>
+                    <td style="font-size: 14px; vertical-align: middle; width: 20%; text-align: center;">
+                        Позиция:
+                    </td>
+                    <td style="font-size: 14px; vertical-align: middle; width: 30%">
+                        <select id="edit_pos" class="form-select" name='edit_pos' style="text-align: left;">
+                            {%for e in pmas%}
+                                {% if e.name != selpos %}
+                	                <option value={{e.id}}>{{e.name}}</option>
+                                {% else %}
+                                    <option value={{e.id}} selected={{e.id}}>{{e.name}}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>                       
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="height: 10px;">
+                    </td>
+                </tr>
+                <tr style="padding-up: 10px">
+                    <td style="font-size: 14px; vertical-align: middle; width: 10%">
+                        Объект:
+                    </td>
+                    <td style="font-size: 14px; vertical-align: middle; width: 30%">
+                        <select id="edit_obj" class="form-select" name='edit_obj' style="text-align: left;">
+                            {%for e in omas%}
+              	                <option value={{e.id}}>{{e.name}}</option>
+                            {% endfor %}
+                        </select>                       
+                    </td>
+                    <td style="font-size: 14px; vertical-align: middle; width: 15%">
+                        Подразделение:
+                    </td>
+                    <td style="font-size: 14px; vertical-align: middle; width: 30%">
+                        <select id="edit_div" class="form-select" name='edit_div' style="text-align: left;">
+                            {%for e in divmas%}
+              	                <option value={{e.id}}>{{e.name}}</option>
+                            {% endfor %}
+                        </select>                       
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="height: 10px;">
+                    </td>
+                </tr>
+                <tr style="padding-up: 10px">
+                    <td style="font-size: 14px; vertical-align: middle; width: 10%">
+                        <div class="mb-3" style="width: 60px;">                
+                            Время:
+                        </div>
+                    </td>
+                    <td style="padding-left: 5px; vertical-align: middle;">
+                        <div class="mb-3" style="width: 100px;">                
+                            <input type="time" class="form-control" onchange="timeChange(1)" name='edit_t1' id='edit_t1' value=${t1}>
+                        </div>
+                    </td>
+                    <td  style="padding-up: 20px; margin-top: 10px;">
+                        <div class="mb-3" style="width: 100px;">
+                            <input type="time" class="form-control" onchange="timeChange(1)" name='edit_t2' id='edit_t2' value=${t2}>
+                        </div>
+                    </td>
+                    <td style="width: 60px; text-align: center; vertical-align: middle;">
+                        <div class="mb-3" style="width: 70px; padding-left: 10px;"> 
+                            <input type="text" class="form-control" name='edit_kol' id='edit_kol' value=${kol} readonly> 
+                        </div> 
+                    </td>
+                </tr>
+            </table>
+            <div class="mb-3">
+                      <input style="display: none" type=text id="GPK" value=${recipient} ></input>
+                </div>
+            </div>
+            `;
+
+    let selectElement = document.getElementById('edit_pos');
+    selectElement.value = sel;
+
+    let selectObj = document.getElementById('edit_obj');
+    selectObj.value = obj;
+
+    let selectDiv = document.getElementById('edit_div');
+    selectDiv.value = div;
+    
+    console.log(selectElement);
+    console.log(sel);
+
+    console.log(selectObj);
+    console.log(obj);
+
+    console.log(selectDiv);
+    console.log(div);
+    
+    })
+
+async function req (ur) {
+    
+    let url = ur;
+    console.log(url);
+
+    let response = await fetch(url, {referrerPolicy: "origin"});
+    
+}    
+
+const buttonGoAddGraphic = () => {
+    
+    window.location.href = "/addgraphic/";
+    
+}    
+
+const buttonDelClick = (gpk) => {
+    
+    const graphic_pk = document.getElementById('GPK').value;
+
+    let url = "/graphicrecdel/" + graphic_pk + "/";
+    console.log(url);    
+    req(url);
+    //window.location.reload();        
+    location.reload();
+    //document.addEventListener('submit', function () {    
+    //  })    
+}    
+
+const buttonEditClick = (gpk) => {
+    
+    const graphic_pk = document.getElementById('GPK0').value;
+    const graphic_t1 = document.getElementById('edit_t10').value;
+    const graphic_t2 = document.getElementById('edit_t20').value;
+    const graphic_kol = document.getElementById('edit_kol0').value;
+    const graphic_dt = document.getElementById('edit_dt0').value;
+    const graphic_pos = document.getElementById('edit_pos0').value;
+    const graphic_obj = document.getElementById('edit_obj0').value;
+    const graphic_div = document.getElementById('edit_div0').value;
+
+    let url = "/graphicrecedit/" + graphic_pk + "/" + graphic_dt + '/' + graphic_t1 + '/' + graphic_t2 + '/' + 
+        graphic_kol + '/' + graphic_pos + '/' + graphic_obj + '/' + graphic_div + '/';;
+    console.log(url);    
+    req(url);
+    //window.location.reload();        
+    location.reload();
+    //document.addEventListener('submit', function () {    
+    //  })    
+}    
+
+const buttonCopyClick = (gpk) => {
+    
+    const graphic_pk = document.getElementById('GPK').value;
+    const graphic_t1 = document.getElementById('edit_t1').value;
+    const graphic_t2 = document.getElementById('edit_t2').value;
+    const graphic_kol = document.getElementById('edit_kol').value;
+    const graphic_dt = document.getElementById('edit_dt').value;
+    const graphic_pos = document.getElementById('edit_pos').value;
+    const graphic_obj = document.getElementById('edit_obj').value;
+    const graphic_div = document.getElementById('edit_div').value;
+
+    let url = "/graphicreccopy/" + graphic_pk + "/" + graphic_dt + '/' + graphic_t1 + '/' + 
+            graphic_t2 + '/' + graphic_kol + '/' + graphic_pos + '/' + graphic_obj + '/' + graphic_div + '/';
+            
+    console.log(url);    
+    req(url);
+    //window.location.reload();        
+    location.reload();
+    //document.addEventListener('submit', function () {    
+    //  })    
+}    
+
+// Req function for Sotr request
+const ReqSotrData = async function(url) {
+  
+  const response = await fetch(url, {referrerPolicy: "origin"});
+  const res = await response.json();  
+  console.log(res['sotr']);  
+  console.log(res['sotrdata']);
+  console.log(res['kol']);
+  console.log(res['sm']);
+
+  const st = res['sotr']
+  const stdata = res['sotrdata']
+  const kol = res['kol'];
+  const sm = res['sm'];
+  const sotrid = res['sotrid'];
+
+  const sotrBody = document.getElementById('stable')
+  var sth = ``;
+  sth += `
+    <tbody id="stable" name="stable">
+
+        <tr>
+            <td class="gtable.td" style="background-color: rgb(8, 93, 172); font-weight: bold; color: white; font-size: 12px; 
+                border: 1px solid #bcfdfa; border-collapse: separate;">
+                
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="s_filter_${sotrid}" checked onclick="CheckBoxClickChecked(${sotrid})">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Отбор
+                    </label>
+                </div>                
+                ${st}</td>`;
+
+    var index;
+    for (index = 0; index < stdata.length; ++index) {
+    // выводим данные по дням
+         sth += `
+                     <td class="gtable.td" style="background-color: rgb(233, 255, 250); color: rgb(0, 0, 0); font-size: 10px;
+                         border: 1px solid #113d3b; border-collapse: separate;">
+                         ${stdata[index]}</td>        
+         `;
+    }
+
+    sth += `<td class="gtable.td" style="background-color:rgb(8, 93, 172); font-weight: bold; color: white; font-size: 14px; border: 1px solid #bcfdfa; border-collapse: separate;">
+                ${kol}</td>
+
+            <td class="gtable.td" style="background-color: rgb(8, 93, 172); font-weight: bold; color: white; font-size: 14px; border: 1px solid #bcfdfa; border-collapse: separate;">
+                ${sm}</td>`;
+        
+    sotrBody.innerHTML = sth;
+    sotrBody.innerHTML += `            
+    </tbody>
+    `;
+
+  return res;  
+}
+
+const CheckBoxClickChecked = (spk) => {
+
+    console.log(spk); 
+    let st1 = 's_filter_';
+    st1 += spk;
+    console.log(st1); 
+
+    // обратно делаем полный список
+    const sotrBody = document.getElementById('stable')
+    sotrBody.innerHTML = `
+    <tbody id="stable" name="stable">
+
+        {% for i in smas %}
+            
+            <tr>
+            <td class="gtable.td" style="background-color: rgb(8, 93, 172); font-weight: bold; color: white; font-size: 12px; 
+                border: 1px solid #bcfdfa; border-collapse: separate;">
+                
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="s_filter_{{i.sotr.pk}}" onclick="CheckBoxClick({{i.sotr.pk}})">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Отбор
+                    </label>
+                </div>
+                
+                {{i.sotr.name}} </td>
+
+            {% for j in i.sotrdata %}
+                <td class="gtable.td" style="background-color: rgb(233, 255, 250); color: rgb(0, 0, 0); font-size: 10px;
+                border: 1px solid #113d3b; border-collapse: separate;">
+                    {{j.info}} ({{j.pos}})</td>
+            {% endfor %}
+            
+            <td class="gtable.td" style="background-color:rgb(8, 93, 172); font-weight: bold; color: white; font-size: 14px; border: 1px solid #bcfdfa; border-collapse: separate;">
+                {{i.kol}}</td>
+
+            <td class="gtable.td" style="background-color: rgb(8, 93, 172); font-weight: bold; color: white; font-size: 14px; border: 1px solid #bcfdfa; border-collapse: separate;">
+                {{i.sm}}</td>
+
+            <tr/>
+                        
+        {% endfor %}    
+        
+    </tbody>
+    `;
+
+    const ss_filter = document.getElementById(st1)
+    ss_filter.scrollIntoView();
+    
+}
+
+const CheckBoxClick = (spk) => {
+    
+    const sotrBody = document.getElementById('stable')
+    const bdate = document.getElementById('id_b_date')
+    const edate = document.getElementById('id_e_date')
+
+    const sp = Number (spk);
+    
+    bd = bdate.value;
+    ed = edate.value;
+
+    u = '/graphsotrinfo/' + spk + '/' + bd + '/' + ed + '/'; 
+    const st = ReqSotrData (u)
+    console.log(st);
+
+    //   location.reload();
+
+    // for (let i = 1; i < sm.length; i++) {
+	// console.log(sm[i]);
+    // }    
+    
+
+    // {% if i.sotr.pk == sf_id.value %}
+    // {% endif %}
+
+    // sotrBody.innerHTML = `
+    // <tbody id="stable" name="stable">
+
+    //     {% for i in smas %}
+    //         {% if i.sotr.pk == 1 %}
+    //         <tr>
+    //         <td class="gtable.td" style="background-color: rgb(8, 93, 172); font-weight: bold; color: white; font-size: 12px; 
+    //             border: 1px solid #bcfdfa; border-collapse: separate;">
+                
+    //             <div class="form-check">
+    //                 <input class="form-check-input" type="checkbox" value="" id="s_filter_{{i.sotr.pk}}" onclick="CheckBoxClick({{i.sotr.pk}})">
+    //                 <label class="form-check-label" for="flexCheckDefault">
+    //                     Фильтр
+    //                 </label>
+    //             </div>
+                
+    //             {{i.sotr.name}} ({{ i.sotr.pk }}) (${sp})</td>
+    //     {% endif %}                
+    //     {% endfor %}    
+        
+    // </tbody>
+    // `;
+
+    // console.log(sotr_filter_pk.value);    
+    // console.log(window.sf_id);    
+    //req(url);
+    // window.location.reload();
+    //location.reload();
+    //document.myform.submit ()
+    //document.querySelector('[name="ReloadButton]').click();
+
+    //document.addEventListener('submit', function () {    
+    //  })    
+}    
+
+// Подсчитываю количество времени
+
+const timeChange = (n_id) => {
+
+const t1Div = document.getElementById('edit_t1').value;           
+const t2Div = document.getElementById('edit_t2').value;
+const kDiv = document.getElementById('edit_kol');    
+
+  // console.log('t1_'+n_id);
+// console.log(t1Div);
+
+let t1 = t1Div.substr(0, 2);
+let t2 = t1Div.substr(3, 2);
+
+// текущая дата
+var dt = new Date();
+
+var date1 = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), Number(t1), Number(t2)); 
+
+t1 = t2Div.substr(0, 2);
+t2 = t2Div.substr(3, 2);
+
+var date2 = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), Number(t1), Number(t2)); 
+
+console.log(dt);
+console.log(date1);
+console.log(date2);
+// alert(String(date1) + String(date2));
+
+let firstDate = t1Div;
+let secondDate = t2Div;
+let getDate = (string) => new Date(0, 0,0, string.split(':')[0], string.split(':')[1]);
+let different = (getDate(secondDate) - getDate(firstDate));
+let differentRes, hours, minuts;
+
+//alert(different);
+
+if(different > 0) {
+    differentRes = different;
+    hours = Math.floor((differentRes % 86400000) / 3600000);
+    //minuts = Math.round(((differentRes % 86400000) % 3600000) / 60000);
+
+    minuts = Math.round(((differentRes % 86400000) % 3600000) / 60000);
+    minuts = Math.round(minuts / 60 * 10) / 10;
+    hours = hours + minuts;
+
+
+} else {
+        differentRes = Math.abs((getDate(firstDate) - getDate(secondDate)));
+        hours = Math.floor(24 - (differentRes % 86400000) / 3600000) - 1;
+        minuts = Math.round(60 - ((differentRes % 86400000) % 3600000) / 60000);
+
+        minuts = Math.round(minuts / 60 * 10) / 10;
+        hours = hours + minuts;
+    }
+
+// let result = hours + ':' + minuts;
+let result = hours;
+
+kDiv.value = String(result);
+
+}
+
+const timeChange0 = (n_id) => {
+
+const t1Div = document.getElementById('edit_t10').value;           
+const t2Div = document.getElementById('edit_t20').value;
+const kDiv = document.getElementById('edit_kol0');    
+
+  // console.log('t1_'+n_id);
+// console.log(t1Div);
+
+let t1 = t1Div.substr(0, 2);
+let t2 = t1Div.substr(3, 2);
+
+// текущая дата
+var dt = new Date();
+
+var date1 = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), Number(t1), Number(t2)); 
+
+t1 = t2Div.substr(0, 2);
+t2 = t2Div.substr(3, 2);
+
+var date2 = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), Number(t1), Number(t2)); 
+
+console.log(dt);
+console.log(date1);
+console.log(date2);
+// alert(String(date1) + String(date2));
+
+let firstDate = t1Div;
+let secondDate = t2Div;
+let getDate = (string) => new Date(0, 0,0, string.split(':')[0], string.split(':')[1]);
+let different = (getDate(secondDate) - getDate(firstDate));
+let differentRes, hours, minuts;
+
+//alert(different);
+
+if(different > 0) {
+    differentRes = different;
+    hours = Math.floor((differentRes % 86400000) / 3600000);
+    //minuts = Math.round(((differentRes % 86400000) % 3600000) / 60000);
+
+    minuts = Math.round(((differentRes % 86400000) % 3600000) / 60000);
+    minuts = Math.round(minuts / 60 * 10) / 10;
+    hours = hours + minuts;
+
+
+} else {
+        differentRes = Math.abs((getDate(firstDate) - getDate(secondDate)));
+        hours = Math.floor(24 - (differentRes % 86400000) / 3600000) - 1;
+        minuts = Math.round(60 - ((differentRes % 86400000) % 3600000) / 60000);
+
+        minuts = Math.round(minuts / 60 * 10) / 10;
+        hours = hours + minuts;
+    }
+
+// let result = hours + ':' + minuts;
+let result = hours;
+
+kDiv.value = String(result);
+
+}
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+{% csrf_token %}
+
+<p>Создана заявка на дату: {{date_zakaz}}</p>
+<p>Объект получения: {{Receiver}}</p>
+<p>Автор заявки: {{user.username}}</p>
+<p></p>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Номенклатура (химия) в заявке</th>
+            <th style="width: 20px; text-align: center;";>Ед.</th>
+            <th style="width: 20px; text-align: center;";>Цена</th>
+            <th style="width: 80px; text-align: center;";>Кол.</th>
+        </tr>
+    </thead>
+    
+    <tbody class="table-warning table-hover">
+
+
+    {% for n in nlist %}
+
+    <tr class="table-warning table-hover">
+        <td>{{ n.nomen.name }}</td>
+        <td style="width: 20px; text-align: center;";>{{ n.edin.name }}</td>
+        <td style="width: 20px; text-align: center;";>{{ n.nomen.cost }}</td>
+        <td style="width: 20px; text-align: center;";>{{ n.kol }}</td>
+    </tr>
+
+    {% endfor %}
+
+    </tbody>
+</table>
+
+{% endblock %}
+

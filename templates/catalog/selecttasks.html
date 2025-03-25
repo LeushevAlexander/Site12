@@ -1,0 +1,82 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+{% csrf_token %}
+
+{% for c in clist %}
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Чек-лист: {{ c.name }}</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-warning table-hover">
+
+        
+{% for t in tlist %}
+
+   {% if c.id == t.taskjobtitlelink.id %} 
+
+    <tr class="table-warning table-hover" id="but_{{t.id}}">
+        <td>{{ t.tasklink }} <span style="font-weight: bold; color: brown;">[{{ t.time_control|time:"H:i" }}]</span></td>
+        <td><button class="btn btn-outline-secondary" type="button" value={{t.id}} 
+              name="choise" onclick="buttonClick({{t.id}})">Выполнено</button></td>
+    </tr>   
+
+   {% endif %}
+
+{% endfor %}
+
+    </tbody>
+    </table>
+{% endfor %}
+
+<script>
+
+async function req (ur) {
+
+    let url = ur;
+    console.log(url);
+
+    let response = await fetch(url, {referrerPolicy: "origin"});
+    
+}
+
+    const buttonClick = (b_id) => {
+
+    const butDiv = document.getElementById('but_'+b_id);           
+    
+    // теперь надо из таблицы django убрать запись, вызываем marktask
+    let url = "/seltask/" + b_id + "/";
+    console.log(url);
+    
+    req(url)
+    
+    butDiv.parentNode.removeChild(butDiv);
+
+}
+
+</script>
+
+{% endblock %}
+

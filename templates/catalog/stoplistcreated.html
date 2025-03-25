@@ -1,0 +1,53 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+{% csrf_token %}
+
+<p>Добавлена запись на дату: {{date_stoplist}}</p>
+<p>Причина: {{cause.name}}</p>
+<p>Автор стоп-листа: {{user.username}}</p>
+<p></p>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Позиция STOP-LIST</th>
+            <th>Объект</th>
+        </tr>
+    </thead>
+    
+    <tbody class="table-warning table-hover">
+
+
+    {% for n in mlist %}
+
+    <tr class="table-warning table-hover">
+        <td>{{ n.nomen.name }}</td>
+        <td>{{ n.nomen.obj.name }}</td>
+    </tr>
+
+    {% endfor %}
+
+    </tbody>
+</table>
+
+{% endblock %}
+

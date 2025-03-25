@@ -1,0 +1,48 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+{% csrf_token %}
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th style="width: 100px; text-align: center;";>Дата</th>
+            <th style="width: 80px; text-align: center;";>Сумма, руб.</th>
+        </tr>
+    </thead>
+    
+    <tbody class="table-warning table-hover">
+
+
+    {% for n in qrlist %}
+
+    <tr class="table-warning table-hover">
+        <td style="width: 100px; text-align: center;">{{ n.date }}</td>
+        <td style="width: 80px; text-align: center;";>{{ n.summa }}</td>
+    </tr>
+
+    {% endfor %}
+
+    </tbody>
+</table>
+
+{% endblock %}
+

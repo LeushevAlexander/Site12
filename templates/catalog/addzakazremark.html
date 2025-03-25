@@ -1,0 +1,41 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<form action="{% url 'AddZakazremark' %}" method="post">
+{% csrf_token %}
+    
+{{ form.as_p }}
+
+<div style="width: 70%;  margin: auto;">
+    <div class="mb-3">
+        <label for="textremark" class="form-label">Комментарий к заявке</label>
+        <textarea class="form-control" id="textremark" rows="3" name="textremark"></textarea>
+    </div>
+</div>
+
+<div class="d-grid gap-2 col-6 mx-auto">
+    <button class="btn btn-primary" type="submit">Сохранить</button>
+</div>
+
+
+</form>
+
+{% endblock %}

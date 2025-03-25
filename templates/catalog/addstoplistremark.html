@@ -1,0 +1,82 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<form action="{% url 'AddStopListRemark' %}" method="post" id="MyForm">
+
+    {% csrf_token %}
+    
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th style="width: 100px; text-align: center; vertical-align: top;">
+                    <div>
+                        <label for="id_sl_date">Дата записи:</label>
+                        <input id="id_sl_date" type="date" value={{date_stoplist}} required id="" name="sl_date" style="width: 80;">
+                    </div>
+                </th>
+                <th style="width: 100px; text-align: center; vertical-align: top;">
+                    <label for="id_zakaz_receiver">Объект:</label>
+                    <select id="ei_zakaz_receiver" class="form-select" name="stl_object" style="width: 140px; vertical-align: middle" onchange="ChangeObj()">
+                        {%for e in objlist%}
+                            {% if e != objset %}
+                                <option value={{e.id}}>{{e.name}}</option> 
+                            {% else %}    
+                                <option value={{e.id}} selected={{e.id}}>{{e.name}}</option> 
+                            {% endif%}
+                        {% endfor %}
+                    </select>
+                </th>
+            </tr>
+        <tr>
+            <th style="width: 100px; text-align: center; vertical-align: top;">
+                <label for="id_cause">Причина:</label>
+                <select id="id_cause" class="form-select" name="cause_object" style="width: 170px; vertical-align: middle">
+                    {%for e in clist%}
+                        {% if e != causeset %}
+                            <option value={{e.id}}>{{e.name}}</option> 
+                        {% else %}    
+                            <option value={{e.id}} selected={{e.id}}>{{e.name}}</option> 
+                        {% endif%}
+                    {% endfor %}
+                </select>
+            </th>
+            <th style="width: 100px; text-align: center; vertical-align: top;">
+            </th>
+        </tr>
+            <tr>
+                <th colspan="2">
+                <div style="width: 70%;  margin: auto;">
+                    <div class="mb-3">
+                        <label for="textremark" class="form-label">Комментарий к STOP:</label>
+                        <textarea class="form-control" id="textremark" rows="3" name="textremark"></textarea>
+                    </div>
+                </div>
+                </th>
+            </tr>
+        </thead>
+    </table>
+
+{{ form.as_p }}
+
+</form>
+
+
+{% endblock %}

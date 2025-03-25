@@ -1,0 +1,176 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<form action="{% url 'AddZakaz' %}" method="post">
+    {% csrf_token %}
+    
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th style="width: 80px; text-align: center; vertical-align: top;">
+                    <div>
+                        <label for="id_zakaz_date">Дата заявки:</label>
+                        <input id="id_zakaz_date" type="date" value={{date_zakaz}} required id="" name="zakaz_date">
+                    </div>
+                </th>
+                <th style="width: 130px; text-align: center; vertical-align: top;">
+                    <label for="id_zakaz_receiver">Объект:</label>
+                    <select id="ei_zakaz_receiver" class="form-select" name="zakaz_receiver" style="width: 130px; vertical-align: middle">
+                        {%for e in rlist%}
+                            {% if e != user.OBJ %}
+                                <option value={{e.id}}>{{e.name}}</option> 
+                            {% else %}    
+                                <option value={{e.id}} selected={{e.id}}>{{e.name}}</option> 
+                            {% endif%}
+                        {% endfor %}
+                    </select>
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Строка фильтра..." 
+                        aria-label="Строка поиска..." value="{{zstr}}" name="searchstring">
+                        <button class="btn btn-outline-secondary" type="submit" value="search" name="choise">Фильтр</button>
+                      </div>                      
+                </th>
+                <th style="vertical-align: top; text-align: center; width: 40%;">
+                    <button type="submit" class="btn btn-primary" value="create" name="choise">Создать заявку</button>
+                </th>
+            </tr>
+        </thead>
+    </table>
+
+{{ form.as_p }}
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th style="text-align: center;">Номенклатура</th>
+            <th style="width: 80px; text-align: center;">Ед.</th>
+            <th style="width: 80px; text-align: center;";>Кол.</th>
+        </tr>
+    </thead>
+    
+    <tbody class="table-warning table-hover">
+
+
+    {% for n in nlist %}
+
+    <tr class="table-warning table-hover">
+        <td data-bs-toggle="modal" data-bs-target="#NomenDescription" data-bs-whatever="{{n.id}}" 
+        data-bs-name="{{n.name}}" data-bs-izo="{{n.img}}" data-bs-desc="{{n.opisanie}}" 
+        data-bs-cost="{{n.cost}}" style="cursor: pointer;">{{ n.name }}, Цена: {{ n.cost }}</td>
+        <td style="width: 80px; text-align: center;">
+            <select id="ei_id" class="form-select" name='ei{{n.id}}' style="width: 80px; text-align: center;">
+                {%for e in elist%}
+                    {% if e != n.ei %}
+                        <option value={{e.id}}>{{e.name}}</option> 
+                    {% else %}
+                        <option value={{e.id}} selected={{e.id}}>{{e.name}}</option> 
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </td>
+        <td style="width: 80px; text-align: center;">
+            <div class="mb-3" style="width: 80px;">                
+                <input type="number" step="any" class="form-control" name='nomen{{n.id}}' id={{n.id}}>
+            </div>            
+        </td>
+    </tr>
+
+    {% endfor %}
+
+    </tbody>
+</table>
+
+</form>
+
+<!-- <--Modal  Окно работает, самое простое, можно делать  -->
+<div class="modal fade" id="NomenDescription" tabindex="-1" aria-labelledby="NomenModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="NomenModalLabel">Nomen Preview:</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+    const exampleModal = document.getElementById('NomenDescription')
+    const modalBody = document.getElementById('modal-body')
+    exampleModal.addEventListener('show.bs.modal', event => {
+    
+    // Icon that triggered the modal
+    const button = event.relatedTarget
+    // Extract info from data-bs-* attributes
+    const recipient = button.getAttribute('data-bs-whatever')
+    const nomenname = button.getAttribute('data-bs-name')
+    const desc = button.getAttribute('data-bs-desc')
+    const izo = button.getAttribute('data-bs-izo')
+    const cost = button.getAttribute('data-bs-cost')
+    // If necessary, you could initiate an AJAX request here
+    // and then do the updating in a callback.
+    //
+    // Update the modal's content.
+    const modalTitle = exampleModal.querySelector('.modal-title')
+    //const modalBodyInput = exampleModal.querySelector('.modal-body input')
+    // const modalBodyName = exampleModal.querySelector('.modal-body NomenName')
+    // const modalBodyDescription = exampleModal.querySelector('.N_Description')    
+    //const nomen = exampleModal.querySelector('.modal-body N-Description')
+
+    //modalTitle.textContent = `Окно товара: ${nomenname}`
+    modalTitle.textContent = "Информация о продукте"
+
+    // modalBodyInput.value = recipient
+    //modalBodyInput.value = `${recipient}`
+    //modalBodyName.value = nomenname
+    //n_descript.innerHTML = `<div class="N-Description" id="N-Description"><h1>ВОТ ОПИСАНИЕ !!!</h1></div>`
+    //nomen.textContent = `ОПИСАНИЕ ТОВАРА!!!`  
+    //modalBody.textContent = `kjhsdfkjasasdhflkasjdhf`
+
+    // Сдесь я сам делаю HTML для отображения информации по товару
+    if (izo != '') {
+        modalBody.innerHTML = `<div>
+            <h1>Лучшая цена: ${cost} р.</h1>
+            <p>Описание: ${desc}</p>        
+            <img src=/${izo} height="350" width="350"> 
+            </div>
+            `;
+        }    
+    else {
+        modalBody.innerHTML = `<div>
+            <h1>Лучшая цена: ${cost} р.</h1>
+            <p>Описание: ${desc}</p>        
+            </div>
+            `;
+    }    
+})
+</script>
+
+{% endblock %}
