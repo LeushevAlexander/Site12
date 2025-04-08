@@ -1,0 +1,1030 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+{% load static %}
+
+<link type="text/css" href="{% static 'catalog/css/btable.css' %}" rel="stylesheet"/>
+
+
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>{{title}}</th>
+            <th>В системе:</th>                
+        </tr>
+    </thead>
+    
+    <tbody class="table-info table-hover">
+
+        <tr class="table-info table-hover">
+                <td>{{user.username}}</td>
+                <td>{{user.JT}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<form action="{% url 'STaskView' %}" method="post">
+
+    {% csrf_token %}
+    
+
+    <div class="But" style="padding-bottom: 20px;">
+
+        <div style="cursor: pointer; padding-left: 40px; display: inline-block; padding-left: 40px;" data-bs-toggle="modal" data-bs-target="#AddQuestion">
+            <img width="60px" height="60px" src="{% static 'catalog/images/addbanket.png'%}"> 
+        </div>   
+
+    </div>
+
+    {{ form.as_p }}
+
+    <div class="container">
+        <table class="gtable" style="table-layout: fixed;">
+        <thead class="gtable.th">
+            <tr>
+                <th class="gtable.th" style="background-color: aquamarine; font-size: 14px; font-weight: bold; width: 100px;">
+                    №
+                </th>
+
+                <th class="gtable.th" style="background-color: aquamarine; font-size: 14px; font-weight: bold; width: 110px;">
+                    Сотрудник
+                </th>
+
+                <th class="gtable.th" style="background-color: aquamarine; font-size: 14px; font-weight: bold; width: 100px;">
+                    Объект
+                </th>
+
+                <th class="gtable.th" style="background-color: aquamarine; font-size: 14px; font-weight: bold; width: 70px;">
+                    Срок
+                </th>
+
+                <th class="gtable.th" style="background-color: aquamarine; font-size: 14px; font-weight: bold; width: 220px;">
+                    Описание
+                </th>
+
+                <th class="gtable.th" style="background-color: aquamarine; font-size: 14px; font-weight: bold; width: 200px;">
+                    Автор
+                </th>
+
+                <th class="gtable.th" style="background-color: aquamarine; font-size: 14px; font-weight: bold; width: 120px;">
+                    Поставлена
+                </th>
+            </tr>
+        </thead>
+        
+        <tbody>
+
+            {% for i in bmas %}
+
+                <tr>
+
+                    <td class="gtable.td" style="font-size: large;">
+                        {{i.index}}
+
+                        {% if request.user.A_BanketEdit %}
+                        <br/>
+                        <div style="cursor: pointer; display: inline-block;"
+                            data-bs-toggle="modal" data-bs-target="#EditQuestion" data-bs-whatever="{{i.record.pk}}" 
+                            data-bs-remark="{{i.record.remark}}" data-bs-dt="{{i.dt}}" data-bs-sum="{{i.record.sum}}"
+                            data-bs-kolg="{{i.record.kolg}}" data-bs-customer="{{i.record.customer}}"
+                            data-bs-ssbor="{{i.record.ssbor}}" data-bs-contact="{{i.record.contact}}"
+                            data-bs-psbor="{{i.psbor}}" data-bs-predoplata="{{i.record.predoplata}}"
+                            data-bs-vmerpos="{{i.record.vidmer.pk}}" data-bs-objpos="{{i.record.obj.pk}}"
+                            data-bs-voplpos="{{i.vopl}}" data-bs-voplppos="{{i.voplp}}">
+                            <img width="35px" height="35px" src="{% static 'catalog/images/EditIcon.jpg'%}"> 
+                        </div>
+                        <div style="cursor: pointer; display: inline-block;" 
+                            data-bs-toggle="modal" data-bs-target="#DelQuestion" data-bs-whatever="{{i.record.pk}}" 
+                            data-bs-customer="{{i.record.customer}}" data-bs-sum="{{i.record.sum}}" 
+                            data-bs-objname="{{i.record.obj.name}}" data-bs-dt="{{i.dt}}">
+                            <img width="35px" height="35px" src="{% static 'catalog/images/DelIcon.png'%}">
+                        </div>
+                        {% endif %}
+
+                    </td>
+                    
+                    <td class="gtable.td">
+                        <div style="cursor: pointer;"
+                            data-bs-toggle="modal" data-bs-target="#InfoQuestion" data-bs-whatever="{{i.record.pk}}" 
+                            data-bs-remark="{{i.record.remark}}" data-bs-dt="{{i.dt}}" data-bs-sum="{{i.record.sum}}"
+                            data-bs-kolg="{{i.record.kolg}}" data-bs-customer="{{i.record.customer}}"
+                            data-bs-ssbor="{{i.record.ssbor}}" data-bs-contact="{{i.record.contact}}"
+                            data-bs-psbor="{{i.psbor}}" data-bs-predoplata="{{i.record.predoplata}}"
+                            data-bs-vmerpos="{{i.record.vidmer.pk}}" data-bs-objpos="{{i.record.obj.pk}}"
+                            data-bs-voplpos="{{i.vopl}}" data-bs-voplppos="{{i.voplp}}">
+                            {{i.date}}
+                        </div>
+                    </td>
+
+                    <td class="gtable.td">
+                        <div style="cursor: pointer;"
+                            data-bs-toggle="modal" data-bs-target="#InfoQuestion" data-bs-whatever="{{i.record.pk}}" 
+                            data-bs-remark="{{i.record.remark}}" data-bs-dt="{{i.dt}}" data-bs-sum="{{i.record.sum}}"
+                            data-bs-kolg="{{i.record.kolg}}" data-bs-customer="{{i.record.customer}}"
+                            data-bs-ssbor="{{i.record.ssbor}}" data-bs-contact="{{i.record.contact}}"
+                            data-bs-psbor="{{i.psbor}}" data-bs-predoplata="{{i.record.predoplata}}"
+                            data-bs-vmerpos="{{i.record.vidmer.pk}}" data-bs-objpos="{{i.record.obj.pk}}"
+                            data-bs-voplpos="{{i.vopl}}" data-bs-voplppos="{{i.voplp}}">
+                            {{i.record.obj.name}}
+                        </div>
+                    </td>
+
+                    <td class="gtable.td">
+                        <div style="cursor: pointer;"
+                            data-bs-toggle="modal" data-bs-target="#InfoQuestion" data-bs-whatever="{{i.record.pk}}" 
+                            data-bs-remark="{{i.record.remark}}" data-bs-dt="{{i.dt}}" data-bs-sum="{{i.record.sum}}"
+                            data-bs-kolg="{{i.record.kolg}}" data-bs-customer="{{i.record.customer}}"
+                            data-bs-ssbor="{{i.record.ssbor}}" data-bs-contact="{{i.record.contact}}"
+                            data-bs-psbor="{{i.psbor}}" data-bs-predoplata="{{i.record.predoplata}}"
+                            data-bs-vmerpos="{{i.record.vidmer.pk}}" data-bs-objpos="{{i.record.obj.pk}}"
+                            data-bs-voplpos="{{i.vopl}}" data-bs-voplppos="{{i.voplp}}">
+                            {{i.record.vidmer.name}}
+                        </div>
+                    </td>
+
+                    <td class="gtable.td">
+                        <div style="cursor: pointer;"
+                            data-bs-toggle="modal" data-bs-target="#InfoQuestion" data-bs-whatever="{{i.record.pk}}" 
+                            data-bs-remark="{{i.record.remark}}" data-bs-dt="{{i.dt}}" data-bs-sum="{{i.record.sum}}"
+                            data-bs-kolg="{{i.record.kolg}}" data-bs-customer="{{i.record.customer}}"
+                            data-bs-ssbor="{{i.record.ssbor}}" data-bs-contact="{{i.record.contact}}"
+                            data-bs-psbor="{{i.psbor}}" data-bs-predoplata="{{i.record.predoplata}}"
+                            data-bs-vmerpos="{{i.record.vidmer.pk}}" data-bs-objpos="{{i.record.obj.pk}}"
+                            data-bs-voplpos="{{i.vopl}}" data-bs-voplppos="{{i.voplp}}">
+                            {{i.record.kolg}}
+                        </div>
+                    </td>
+
+                    {% if request.user.A_BanketFin %}
+
+
+                    <td class="gtable.td">
+                        <div style="cursor: pointer;"
+                            data-bs-toggle="modal" data-bs-target="#InfoQuestion" data-bs-whatever="{{i.record.pk}}" 
+                            data-bs-remark="{{i.record.remark}}" data-bs-dt="{{i.dt}}" data-bs-sum="{{i.record.sum}}"
+                            data-bs-kolg="{{i.record.kolg}}" data-bs-customer="{{i.record.customer}}"
+                            data-bs-ssbor="{{i.record.ssbor}}" data-bs-contact="{{i.record.contact}}"
+                            data-bs-psbor="{{i.psbor}}" data-bs-predoplata="{{i.record.predoplata}}"
+                            data-bs-vmerpos="{{i.record.vidmer.pk}}" data-bs-objpos="{{i.record.obj.pk}}"
+                            data-bs-voplpos="{{i.vopl}}" data-bs-voplppos="{{i.voplp}}">
+                            {{i.sum_view}}
+                        </div>
+                    </td>
+
+                    <td class="gtable.td">
+                        <div style="cursor: pointer;"
+                            data-bs-toggle="modal" data-bs-target="#InfoQuestion" data-bs-whatever="{{i.record.pk}}" 
+                            data-bs-remark="{{i.record.remark}}" data-bs-dt="{{i.dt}}" data-bs-sum="{{i.record.sum}}"
+                            data-bs-kolg="{{i.record.kolg}}" data-bs-customer="{{i.record.customer}}"
+                            data-bs-ssbor="{{i.record.ssbor}}" data-bs-contact="{{i.record.contact}}"
+                            data-bs-psbor="{{i.psbor}}" data-bs-predoplata="{{i.record.predoplata}}"
+                            data-bs-vmerpos="{{i.record.vidmer.pk}}" data-bs-objpos="{{i.record.obj.pk}}"
+                            data-bs-voplpos="{{i.vopl}}" data-bs-voplppos="{{i.voplp}}">
+                            {{i.predoplata_view}}
+                        </div>
+                    </td>
+
+                    <td class="gtable.td">
+                        {{i.ssbor_view}}
+                    </td>
+
+                    <td class="gtable.td">
+                        {{i.pbsor}}
+                    </td>
+
+                    {% endif %}
+
+                    <td class="gtable.td">
+                        {{i.record.customer}}
+                    </td>
+
+                    <td class="gtable.td">
+                        {{i.record.contact}}
+                    </td>
+
+                    <td class="gtable.td">
+                        {{i.record.remark}}
+                    </td>
+
+                    <td class="gtable.td">
+                        {{i.record.autor.name}}
+                    </td>
+
+                    <td class="gtable.td">
+                        {{i.dc}}
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+        </tbody>
+        </table>
+    </div>
+
+</form>
+
+<div class="modal fade" id="DelQuestion" tabindex="-1" aria-labelledby="DelQuestionLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header"><img width="35px" height="35px" src="{% static 'catalog/images/DelIcon.png'%}" style="padding-right: 10px;">
+          <h1 class="modal-title fs-5" id="DelQuestionLabel">Nomen Preview:</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body">
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-danger" data-bs-dismiss="modal" onclick="buttonDelClick({{i.record.pk}})">Удалить</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="EditQuestion" tabindex="-1" aria-labelledby="EditQuestionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header"><img width="35px" height="35px" src="{% static 'catalog/images/EditIcon.jpg'%}" style="padding-right: 10px;">
+          <h1 class="modal-title fs-5" id="EditQuestionLabel">Nomen Preview:</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body_edit">
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" onclick="buttonEditClick()">Изменить</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>            
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AddQuestion" tabindex="-1" aria-labelledby="AddQuestionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header"><img width="35px" height="35px" src="{% static 'catalog/images/CopyIcon.webp'%}" style="padding-right: 10px;">
+            <h1 class="modal-title fs-5" id="AddQuestionLabel">Nomen Preview:</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body_add">
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-info" data-bs-dismiss="modal" onclick="buttonAddClick()">Создать</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="InfoQuestion" tabindex="-1" aria-labelledby="InfoQuestionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header"><img width="45px" height="45px" src="{% static 'catalog/images/search.jpeg'%}" style="padding-right: 10px;">
+            <h1 class="modal-title fs-5" id="InfoQuestionLabel">Preview:</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-body_info">
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script>
+
+const exampleModal = document.getElementById('DelQuestion')
+    const modalBody = document.getElementById('modal-body')
+    exampleModal.addEventListener('show.bs.modal', event => {
+    
+    const button = event.relatedTarget
+    const recipient = button.getAttribute('data-bs-whatever')
+    const sum = button.getAttribute('data-bs-sum')
+    const customer = button.getAttribute('data-bs-customer')
+    const objname = button.getAttribute('data-bs-objname')
+    const infodt = button.getAttribute('data-bs-dt')
+    const modalTitle = exampleModal.querySelector('.modal-title')
+    modalTitle.textContent = "Удалить запись банкета ?"
+
+    // Сдесь я сам делаю HTML для отображения информации по удалению записи банкета
+    modalBody.innerHTML = `<div>
+            <table class="table-warning table-hover" style="width: 100%">             
+                <tr style="height: 20px; text-align: center; font-weight: bold; background-color: rgb(247, 240, 180); 
+                    padding: 10px; width: 100%">
+                    <td colspan="4" style="padding: 10px;">
+                        Дата: ${infodt}
+                    </td>
+                </tr>   
+                <tr style="height: 20px; text-align: left; background-color: rgb(247, 240, 180);">
+                    <td colspan="4" style="padding: 10px;">
+                        Объект: <b><u>${objname}</u></b>
+                    </td>
+                </tr>   
+                <tr style="height: 20px; text-align: left; background-color: rgb(247, 240, 180);">
+                    <td colspan="4" style="padding: 10px;">
+                        Заказчик: <b><u>${customer}</u></b>
+                    </td>
+                </tr>   
+                <tr style="height: 20px; text-align: left; background-color: rgb(247, 240, 180);">
+                    <td colspan="4" style="padding: 10px;">
+                        Сумма: <b><u>${sum}</u></b>
+                    </td>
+                </tr>   
+                <tr style="height: 20px; text-align: center; background-color: rgb(248, 194, 149);">
+                    <td colspan="4" style="padding: 10px;">
+                        Удалить запись ?<div><input style="display: none;" type=text id="BPK" value=${recipient}></div>
+                    </td>
+                </tr>    
+            </table>
+            `;
+            
+    })
+
+    const EditModal = document.getElementById('EditQuestion')
+    const EditBody = document.getElementById('modal-body_edit')
+    EditModal.addEventListener('show.bs.modal', event => {
+    
+    const button = event.relatedTarget
+    const recipient = button.getAttribute('data-bs-whatever')
+    const sum = button.getAttribute('data-bs-sum')
+    const infodt = button.getAttribute('data-bs-dt')
+    const vmerpos = button.getAttribute('data-bs-vmerpos')
+    const kolg = button.getAttribute('data-bs-kolg')
+    const customer = button.getAttribute('data-bs-customer')
+    const contact = button.getAttribute('data-bs-contact')
+    const objpos = button.getAttribute('data-bs-objpos')
+    const voplpos = button.getAttribute('data-bs-voplpos')
+    const predoplata = button.getAttribute('data-bs-predoplata')
+    const voplppos = button.getAttribute('data-bs-voplppos')
+    const ssbor = button.getAttribute('data-bs-ssbor')
+    const psbor = button.getAttribute('data-bs-psbor')
+    const remark = button.getAttribute('data-bs-remark')
+
+    const modalTitle = EditModal.querySelector('.modal-title')
+    modalTitle.textContent = "Изменение в записи банкета"
+
+    const vmer = Number(vmerpos)
+    const obj = Number(objpos)
+    const vopl = Number(voplpos)
+    const voplp = Number(voplppos)
+
+    // Сдесь я сам делаю HTML для отображения информации по изменению банкета
+    EditBody.innerHTML = `<div>
+            <table class="table-warning table-hover">             
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Дата:</span>
+                            <input id="edit_date" type="date" value="${infodt}" class="form-control" aria-describedby="basic-addon1" value={{bdate}} required name="edit_date">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="edit_vmer">Мероприятие:</label>
+                            <select id="edit_vmer" class="form-select" name='edit_vmer' style="text-align: left;">
+                                {%for e in mmas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="edit_obj">Объект:</label>
+                            <select id="edit_obj" class="form-select" name='edit_obj' style="text-align: left;">
+                                {%for e in omas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon2">Сумма:</span>
+                            <input id="edit_sum" type="number" min="0" value="${sum}" class="form-control" aria-describedby="basic-addon2" name="edit_sum">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="edit_vopl">Вид оплаты:</label>
+                            <select id="edit_vopl" class="form-select" name='edit_vopl' style="text-align: left;">
+                                {%for e in vmas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon3">Количество гостей:</span>
+                            <input id="edit_kolg" type="number" min="0" value="${kolg}" class="form-control" aria-describedby="basic-addon3" name="edit_kolg">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon4">Предоплата:</span>
+                            <input id="edit_predoplata" type="number" min="0" value="${predoplata}" required class="form-control" aria-describedby="basic-addon4" name="edit_predoplata">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="edit_voplp">Вид  предоплаты:</label>
+                            <select id="edit_voplp" class="form-select" name='edit_voplp' style="text-align: left;">
+                                {%for e in vmas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon5">Серв. сбор:</span>
+                            <input id="edit_ssbor" type="number" min="0" value="${ssbor}" class="form-control" aria-describedby="basic-addon5" name="edit_ssbor">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon6">Проб. сбор:</span>
+                            <input id="edit_psbor" type="text" value="${psbor}" class="form-control" aria-describedby="basic-addon6" name="edit_psbor">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr style="height: 20px;">
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon7">Заказчик:</span>
+                            <input id="edit_customer" type="text" value="${customer}" class="form-control" aria-describedby="basic-addon7" name="edit_customer">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3" style="">
+                            <span class="input-group-text" id="basic-addon8">Контакт:</span>
+                            <input id="edit_contact" type="text" value="${contact}"  class="form-control" aria-describedby="basic-addon8" name="edit_contact">
+                        </div>                    
+                    </td>                                        
+                </tr>
+                
+                <tr>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon9">Комментарий:</span>
+                            <textarea id="edit_remark" type="text" rows="4" class="form-control" name="edit_remark">${remark}</textarea>
+                        </div>
+                    </td>
+                </tr>
+
+            </table>
+            <div class="mb-3">
+                      <input style="display: none" type=text id="BPK0" value="${recipient}" ></input>
+                </div>
+            </div>
+            `;
+        
+        let selectElement = document.getElementById('edit_vmer');
+        selectElement.value = vmer;
+
+        let selectObj = document.getElementById('edit_obj');
+        selectObj.value = obj;
+
+        let selectVidopl = document.getElementById('edit_vopl');
+        selectVidopl.value = vopl;
+
+        let selectVidoplp = document.getElementById('edit_voplp');
+        selectVidoplp.value = voplp;
+            
+    })
+
+    const AddModal = document.getElementById('AddQuestion')
+    const AddBody = document.getElementById('modal-body_add')
+    AddModal.addEventListener('show.bs.modal', event => {
+    
+    const button = event.relatedTarget
+    const recipient = '0'
+    const sum = '0'
+    const vmerpos = '1'
+    const kolg = 0
+    const customer = ''
+    const contact = ''
+    const objpos = 1
+    const voplpos = 1
+    const predoplata = '0'
+    const voplppos = 1
+    const ssbor = '0'
+    const psbor = '0'
+    const remark = ''
+
+    const modalTitle = AddModal.querySelector('.modal-title')
+    modalTitle.textContent = "Создание записи банкета"
+
+    const vmer = Number(1)
+    const obj = Number(1)
+    const vopl = Number(1)
+    const voplp = Number(1)
+
+    const today = new Date();
+    const dt1 = today.toLocaleString('ru-RU', { year: 'numeric', month: 'numeric', day: 'numeric' });    
+    const dt2 = dt1.split(".").reverse().join("-");
+    const infodt = dt2;
+
+    // Сдесь я сам делаю HTML для отображения информации по  созданию банкета
+    AddBody.innerHTML = `<div>
+            <table class="table-warning table-hover">             
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Дата:</span>
+                            <input id="add_date" type="date" value="${infodt}" required class="form-control" aria-describedby="basic-addon1" value={{bdate}} required name="add_date">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="add_vmer">Мероприятие:</label>
+                            <select id="add_vmer" class="form-select" name='add_vmer' style="text-align: left;">
+                                {%for e in mmas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="add_obj">Объект:</label>
+                            <select id="add_obj" class="form-select" name='add_obj' style="text-align: left;">
+                                {%for e in omas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon2">Сумма:</span>
+                            <input id="add_sum" type="number" min="0" value="${sum}" class="form-control" aria-describedby="basic-addon2" name="add_sum">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="add_vopl">Вид оплаты:</label>
+                            <select id="add_vopl" class="form-select" name='add_vopl' style="text-align: left;">
+                                {%for e in vmas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon3">Количество гостей:</span>
+                            <input id="add_kolg" type="number" min="0" value="${kolg}" class="form-control" aria-describedby="basic-addon3" name="add_kolg">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon4">Предоплата:</span>
+                            <input id="add_predoplata" type="number" min="0" value="${predoplata}" class="form-control" aria-describedby="basic-addon4" name="add_predoplata">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="add_voplp">Вид  предоплаты:</label>
+                            <select id="add_voplp" class="form-select" name='add_voplp' style="text-align: left;">
+                                {%for e in vmas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon5">Серв. сбор:</span>
+                            <input id="add_ssbor" type="number" min="0" value="${ssbor}" class="form-control" aria-describedby="basic-addon5" name="add_ssbor">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon6">Проб. сбор:</span>
+                            <input id="add_psbor" type="text" value="${psbor}" class="form-control" aria-describedby="basic-addon6" name="add_psbor">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr style="height: 20px;">
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon16">Заказчик:</span>
+                            <input id="add_customer" type="text" value="${customer}" class="form-control" aria-describedby="basic-addon16" name="add_customer">
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon18">Контакт:</span>
+                            <input id="add_contact" type="text" value="${contact}" class="form-control" name="add_contact">
+                        </div>                    
+                    </td>                                        
+                </tr>
+                
+                <tr>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon9">Комментарий:</span>
+                            <textarea id="add_remark" type="text" rows="4" class="form-control" name="add_remark">${remark}</textarea>
+                        </div>
+                    </td>
+                </tr>
+
+            </table>
+            <div class="mb-3">
+                      <input style="display: none" type=text id="BPK0" value="${recipient}"></input>
+                </div>
+            </div>
+            `;
+        
+        let selectElement = document.getElementById('add_vmer');
+        selectElement.value = vmer;
+
+        let selectObj = document.getElementById('add_obj');
+        selectObj.value = obj;
+
+        let selectVidopl = document.getElementById('add_vopl');
+        selectVidopl.value = vopl;
+
+        let selectVidoplp = document.getElementById('add_voplp');
+        selectVidoplp.value = voplp;
+            
+    })
+
+    const InfoModal = document.getElementById('InfoQuestion')
+    const InfoBody = document.getElementById('modal-body_info')
+    InfoModal.addEventListener('show.bs.modal', event => {
+    
+    const button = event.relatedTarget
+    const recipient = button.getAttribute('data-bs-whatever')
+    const sum = button.getAttribute('data-bs-sum')
+    const infodt = button.getAttribute('data-bs-dt')
+    const vmerpos = button.getAttribute('data-bs-vmerpos')
+    const kolg = button.getAttribute('data-bs-kolg')
+    const customer = button.getAttribute('data-bs-customer')
+    const contact = button.getAttribute('data-bs-contact')
+    const objpos = button.getAttribute('data-bs-objpos')
+    const voplpos = button.getAttribute('data-bs-voplpos')
+    const predoplata = button.getAttribute('data-bs-predoplata')
+    const voplppos = button.getAttribute('data-bs-voplppos')
+    const ssbor = button.getAttribute('data-bs-ssbor')
+    const psbor = button.getAttribute('data-bs-psbor')
+    const remark = button.getAttribute('data-bs-remark')
+
+    const modalTitle = InfoModal.querySelector('.modal-title')
+    modalTitle.textContent = "Информация по записи банкета"
+
+    const vmer = Number(vmerpos)
+    const obj = Number(objpos)
+    const vopl = Number(voplpos)
+    const voplp = Number(voplppos)
+    
+    // Сдесь я сам делаю HTML для отображения информации по банкету
+    InfoBody.innerHTML = `<div>
+            <table class="table-warning table-hover">             
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon21">Дата:</span>
+                            <input id="info_date" type="date" value="${infodt}" class="form-control" aria-describedby="basic-addon21" value={{bdate}}  name="info_date" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="info_vmer">Мероприятие:</label>
+                            <select id="info_vmer" class="form-select" name='info_vmer' style="text-align: left;" disabled>
+                                {%for e in mmas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="info_obj">Объект:</label>
+                            <select id="info_obj" class="form-select" name='info_obj' style="text-align: left;" disabled>
+                                {%for e in omas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+                {% if request.user.A_BanketFin %}
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon22">Сумма:</span>
+                            <input id="info_sum" type="number" min="0" value="${sum}" class="form-control" aria-describedby="basic-addon22" name="info_sum" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="info_vopl">Вид оплаты:</label>
+                            <select id="info_vopl" class="form-select" name='info_vopl' style="text-align: left;" disabled>
+                                {%for e in vmas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon23">Количество гостей:</span>
+                            <input id="info_kolg" type="number" min="0" value="${kolg}" class="form-control" aria-describedby="basic-addon3" name="info_kolg" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+                {% if request.user.A_BanketFin %}
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon24">Предоплата:</span>
+                            <input id="info_predoplata" type="number" min="0" value="${predoplata}" class="form-control" aria-describedby="basic-addon24" name="info_predoplata" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="info_voplp">Вид  предоплаты:</label>
+                            <select id="info_voplp" class="form-select" name='info_voplp' style="text-align: left;" disabled>
+                                {%for e in vmas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
+                        </div>                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon25">Серв. сбор:</span>
+                            <input id="info_ssbor" ttype="number" min="0" value="${ssbor}" class="form-control" aria-describedby="basic-addon25" name="info_ssbor" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon26">Проб. сбор:</span>
+                            <input id="info_psbor" type="text" value="${psbor}" class="form-control" aria-describedby="basic-addon26" name="info_psbor" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+                {% endif %}
+
+                <tr style="height: 20px;">
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon216">Заказчик:</span>
+                            <input id="info_customer" type="text" value="${customer}" class="form-control" aria-describedby="basic-addon216" name="info_customer" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon218">Контакт:</span>
+                            <input id="info_contact" type="text" value="${contact}" class="form-control" name="info_contact" disabled>
+                        </div>                    
+                    </td>                                        
+                </tr>
+                
+                <tr>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon29">Комментарий:</span>
+                            <textarea id="info_remark" type="text" rows="4" class="form-control" name="info_remark" disabled>${remark}</textarea>
+                        </div>
+                    </td>
+                </tr>
+
+            </table>
+            <div class="mb-3">
+                      <input style="display: none" type=text id="BPK2" value="${recipient}"></input>
+                </div>
+            </div>
+            `;
+        
+        let selectElement = document.getElementById('info_vmer');
+        selectElement.value = vmer;
+
+        let selectObj = document.getElementById('info_obj');
+        selectObj.value = obj;
+
+        let selectVidopl = document.getElementById('info_vopl');
+        selectVidopl.value = vopl;
+
+        let selectVidoplp = document.getElementById('info_voplp');
+        selectVidoplp.value = voplp;
+            
+    })
+
+async function req (ur) {
+    
+    let url = ur;
+    console.log(url);
+
+    let response = await fetch(url, {referrerPolicy: "origin"});
+    
+}    
+
+async function req_data (ur, dt) {
+    
+    let url = ur;
+    let data = dt;
+
+    const csrftoken = '{{ csrf_token }}'
+
+    console.log(url);
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify(data),
+    })
+    const result = await response.text()
+    return result    
+
+} 
+
+
+const buttonDelClick = (bpk) => {
+    
+    const banket_pk = document.getElementById('BPK').value;
+
+    let url = "/banketrecdel/" + banket_pk + "/";
+    console.log(url);    
+    req(url);
+    location.reload();
+}    
+
+const buttonEditClick = () => {
+
+    const url = '/banketrecedit/'
+    
+    const b_dt = document.getElementById('edit_date').value;
+    const b_vmer = document.getElementById('edit_vmer').value;
+    const b_obj = document.getElementById('edit_obj').value;
+    const b_sum = document.getElementById('edit_sum').value;
+    const b_vopl = document.getElementById('edit_vopl').value;
+    const b_kolg = document.getElementById('edit_kolg').value;
+    const b_prodoplata = document.getElementById('edit_predoplata').value;
+    const b_voplp = document.getElementById('edit_voplp').value;
+    const b_ssbor = document.getElementById('edit_ssbor').value;
+    const b_psbor = document.getElementById('edit_psbor').value;
+    const b_customer = document.getElementById('edit_customer').value;
+    const b_contact = document.getElementById('edit_contact').value;
+    const b_remark = document.getElementById('edit_remark').value;
+    const b_pk = document.getElementById('BPK0').value;
+
+    const data = {
+        dt: b_dt,
+        vmer: b_vmer,
+        obj: b_obj,
+        sum: b_sum,
+        vopl: b_vopl,
+        kolg: b_kolg,
+        predoplata: b_prodoplata,
+        voplp: b_voplp,
+        ssbor: b_ssbor,
+        psbor: b_psbor,
+        customer: b_customer,
+        contact: b_contact,
+        remark: b_remark,
+        pk: b_pk,
+    };
+
+    req_data (url, data);
+    console.log(data);
+    //location.reload();
+    window.location.reload();
+}    
+
+const buttonAddClick = () => {
+    
+    const url = '/banketrecadd/'
+    
+    const b_dt = document.getElementById('add_date').value;
+    const b_vmer = document.getElementById('add_vmer').value;
+    const b_obj = document.getElementById('add_obj').value;
+    const b_sum = document.getElementById('add_sum').value;
+    const b_vopl = document.getElementById('add_vopl').value;
+    const b_kolg = document.getElementById('add_kolg').value;
+    const b_prodoplata = document.getElementById('add_predoplata').value;
+    const b_voplp = document.getElementById('add_voplp').value;
+    const b_ssbor = document.getElementById('add_ssbor').value;
+    const b_psbor = document.getElementById('add_psbor').value;
+    const b_customer = document.getElementById('add_customer').value;
+    const b_contact = document.getElementById('add_contact').value;
+    const b_remark = document.getElementById('add_remark').value;
+
+    const data = {
+        dt: b_dt,
+        vmer: b_vmer,
+        obj: b_obj,
+        sum: b_sum,
+        vopl: b_vopl,
+        kolg: b_kolg,
+        predoplata: b_prodoplata,
+        voplp: b_voplp,
+        ssbor: b_ssbor,
+        psbor: b_psbor,
+        customer: b_customer,
+        contact: b_contact,
+        remark: b_remark,
+    };
+
+    req_data (url, data);
+    console.log(data);
+    location.reload();    
+}    
+
+
+</script>
+
+{% endblock %}

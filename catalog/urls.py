@@ -12,6 +12,7 @@ from .chlist import SetChlControlTask, SaveChlControlTaskRem, ChlReportBasic, Cr
 from .him import AddZakazHim, ExeZakazHim, AddZakazremarkHim, SelExeZakazHim, NomenHimView, NomenHimRecAdd, NomenHimRecEdit
 from .stoplist import StopListView, AddStopList, AddStopListRemark, StopListRecDel, StopListReport
 from .den import DenView, DenRecDel, DenRecEdit, DenRecAdd, DenDiagramm
+from .stask import STaskView
 
 urlpatterns = [
      path('', HIndex, name='home'), 
@@ -84,5 +85,6 @@ urlpatterns = [
      path('denrecedit/', DenRecEdit, name='DenRecEdit'),
      path('denrecadd/', DenRecAdd, name='DenRecAdd'),
      path('dendiagramm/', DenDiagramm, name='DenDiagramm'),
+     path('stask/', STaskView, name='STaskView'),
 
      ]

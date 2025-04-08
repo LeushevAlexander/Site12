@@ -33,71 +33,6 @@ def STaskRecEdit (Request):
     dt = datetime.datetime.strptime((loads(Request.body)['dt']), '%Y-%m-%d').date()
     objset = Receiver.objects.get(pk=int(loads(Request.body)['obj']))
     
-    st = loads(Request.body)['vnal'] 
-    vnal = GetF(st)
-
-    st = loads(Request.body)['vbnal']
-    vbnal = GetF(st)
-
-    st = loads(Request.body)['vbs'] 
-    vbs = GetF(st)
-
-    st = loads(Request.body)['vpp'] 
-    vpp = GetF(st)
-
-    st = loads(Request.body)['vpr'] 
-    vpr = GetF(st)
-
-    st = loads(Request.body)['vsr'] 
-    vsr = GetF(st)
-
-    st = loads(Request.body)['vbar'] 
-    vbar = GetF(st)
-
-    st = loads(Request.body)['vkuh'] 
-    vkuh = GetF(st)
-
-    st = loads(Request.body)['chnal'] 
-    chnal = GetF(st)
-
-    st = loads(Request.body)['chbnal'] 
-    chbnal = GetF(st)
-
-    st = loads(Request.body)['kolg']
-    kolg = GetF(st)
-
-    st = loads(Request.body)['gorv'] 
-    gorv = GetF(st)
-
-    st = loads(Request.body)['gork'] 
-    gork = GetF(st)
-
-    st = loads(Request.body)['holv'] 
-    holv = GetF(st)
-
-    st = loads(Request.body)['holk'] 
-    holk = GetF(st)
-
-    st = loads(Request.body)['pizv'] 
-    pizv = GetF(st)
-
-    st = loads(Request.body)['pizk'] 
-    pizk = GetF(st)
-
-    st = loads(Request.body)['desv'] 
-    desv = GetF(st)
-
-    st = loads(Request.body)['desk'] 
-    desk = GetF(st)
-
-    st = loads(Request.body)['kofv'] 
-    kofv = GetF(st)
-
-    st = loads(Request.body)['kofk'] 
-    kofk = GetF(st)
-
-    st = loads(Request.body)['alkv'] 
-    alkv = GetF(st)
 
     st = loads(Request.body)['alkk'] 
     alkk = GetF(st)
@@ -305,7 +240,7 @@ def STaskView (Request):
         else:
             tform = STaskForm ()
         
-    return render(Request, 'catalog/staskview.html', {'bdate': ddate1, 'edate': ddate2, 'tdate': tdate, 'user': Request.user, 
+    return render(Request, 'catalog/stask.html', {'bdate': ddate1, 'edate': ddate2, 'tdate': tdate, 'user': Request.user, 
         'menu': mn, 'title': 'Задачи сотрудников', 'form': tform, 'dmas': dmas, 'omas': omas, 'tmas': t, 'tpmas': tpmas, 
         'pmas': pmas, 'smas': smas,
         })

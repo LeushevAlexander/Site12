@@ -154,6 +154,8 @@ class NomenHimForm(forms.Form):
 class DenForm(forms.Form):
     k=0
 
-class DenReportForm(forms.Form):
+class DenReportForm (forms.Form):
     k=0
 
+class STaskForm (forms.Form):
+    k=0
