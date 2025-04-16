@@ -3,7 +3,7 @@ from json import loads
 from .views import getmenu
 from django.db.models import Q
 from .forms import STaskForm
-from .models import Receiver, Source, Sotr, STask, STaskPriority, STaskType
+from .models import Receiver, Sotr, STask, STaskPriority, STaskType, Podrazd
 import datetime
 
 def STaskRecDel (Request, bpk):
@@ -209,10 +209,12 @@ def STaskView (Request):
         return redirect('Login') 
 
     omas = Receiver.objects.all()
-    dmas = Source.objects.all()
+    dmas = Podrazd.objects.all()
     tpmas = STaskType.objects.all()
     pmas = STaskPriority.objects.all()
-    smas = Sotr.objects.filter(active=True)
+    smas = Sotr.objects.filter(active=True).order_by('name')
+
+    tform = STaskForm ()
 
     begindate = datetime.date.today()
     enddate = datetime.date.today()

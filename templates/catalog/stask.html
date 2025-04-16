@@ -532,21 +532,15 @@ const exampleModal = document.getElementById('DelQuestion')
     
     const button = event.relatedTarget
     const recipient = '0'
-    const sum = '0'
-    const vmerpos = '1'
-    const kolg = 0
-    const customer = ''
-    const contact = ''
     const objpos = 1
-    const voplpos = 1
-    const predoplata = '0'
-    const voplppos = 1
-    const ssbor = '0'
-    const psbor = '0'
-    const remark = ''
-
+    const divpos = 1
+    const prioritypos = 1
+    const typepos = 1
+    const exepos = 1
+    const name = ''
+    
     const modalTitle = AddModal.querySelector('.modal-title')
-    modalTitle.textContent = "Создание записи банкета"
+    modalTitle.textContent = "Создание задачи сотруднику"
 
     const vmer = Number(1)
     const obj = Number(1)
@@ -556,7 +550,7 @@ const exampleModal = document.getElementById('DelQuestion')
     const today = new Date();
     const dt1 = today.toLocaleString('ru-RU', { year: 'numeric', month: 'numeric', day: 'numeric' });    
     const dt2 = dt1.split(".").reverse().join("-");
-    const infodt = dt2;
+    const dateexe = dt2;
 
     // Сдесь я сам делаю HTML для отображения информации по  созданию банкета
     AddBody.innerHTML = `<div>
@@ -564,8 +558,8 @@ const exampleModal = document.getElementById('DelQuestion')
                 <tr>
                     <td>
                         <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">Дата:</span>
-                            <input id="add_date" type="date" value="${infodt}" required class="form-control" aria-describedby="basic-addon1" value={{bdate}} required name="add_date">
+                            <span class="input-group-text" id="basic-addon1">Срок исполнения:</span>
+                            <input id="add_date" type="date" value="${dateexe}" required class="form-control" aria-describedby="basic-addon1" value={{bdate}} required name="add_date">
                         </div>                    
                     </td>                                        
                 </tr>
@@ -573,20 +567,7 @@ const exampleModal = document.getElementById('DelQuestion')
                 <tr>
                     <td>
                         <div class="input-group mb-3">                            
-                            <label class="input-group-text" for="add_vmer">Мероприятие:</label>
-                            <select id="add_vmer" class="form-select" name='add_vmer' style="text-align: left;">
-                                {%for e in mmas%}
-              	                    <option value={{e.id}}>{{e.name}}</option>
-                                {% endfor %}
-                            </select>                       
-                        </div>                    
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <div class="input-group mb-3">                            
-                            <label class="input-group-text" for="add_obj">Объект:</label>
+                            <label class="input-group-text" for="add_vmer">Объект:</label>
                             <select id="add_obj" class="form-select" name='add_obj' style="text-align: left;">
                                 {%for e in omas%}
               	                    <option value={{e.id}}>{{e.name}}</option>
@@ -598,19 +579,10 @@ const exampleModal = document.getElementById('DelQuestion')
 
                 <tr>
                     <td>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon2">Сумма:</span>
-                            <input id="add_sum" type="number" min="0" value="${sum}" class="form-control" aria-describedby="basic-addon2" name="add_sum">
-                        </div>                    
-                    </td>                                        
-                </tr>
-
-                <tr>
-                    <td>
                         <div class="input-group mb-3">                            
-                            <label class="input-group-text" for="add_vopl">Вид оплаты:</label>
-                            <select id="add_vopl" class="form-select" name='add_vopl' style="text-align: left;">
-                                {%for e in vmas%}
+                            <label class="input-group-text" for="add_vmer">Сотрудник:</label>
+                            <select id="add_sotr" class="form-select" name='add_sotr' style="text-align: left;">
+                                {%for e in smas%}
               	                    <option value={{e.id}}>{{e.name}}</option>
                                 {% endfor %}
                             </select>                       
@@ -620,28 +592,10 @@ const exampleModal = document.getElementById('DelQuestion')
 
                 <tr>
                     <td>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon3">Количество гостей:</span>
-                            <input id="add_kolg" type="number" min="0" value="${kolg}" class="form-control" aria-describedby="basic-addon3" name="add_kolg">
-                        </div>                    
-                    </td>                                        
-                </tr>
-
-                <tr>
-                    <td>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon4">Предоплата:</span>
-                            <input id="add_predoplata" type="number" min="0" value="${predoplata}" class="form-control" aria-describedby="basic-addon4" name="add_predoplata">
-                        </div>                    
-                    </td>                                        
-                </tr>
-
-                <tr>
-                    <td>
                         <div class="input-group mb-3">                            
-                            <label class="input-group-text" for="add_voplp">Вид  предоплаты:</label>
-                            <select id="add_voplp" class="form-select" name='add_voplp' style="text-align: left;">
-                                {%for e in vmas%}
+                            <label class="input-group-text" for="add_obj">Подразделение:</label>
+                            <select id="add_div" class="form-select" name='add_div' style="text-align: left;">
+                                {%for e in dmas%}
               	                    <option value={{e.id}}>{{e.name}}</option>
                                 {% endfor %}
                             </select>                       
@@ -651,45 +605,35 @@ const exampleModal = document.getElementById('DelQuestion')
 
                 <tr>
                     <td>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon5">Серв. сбор:</span>
-                            <input id="add_ssbor" type="number" min="0" value="${ssbor}" class="form-control" aria-describedby="basic-addon5" name="add_ssbor">
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="add_type">Тип задачи:</label>
+                            <select id="add_type" class="form-select" name='add_type' style="text-align: left;">
+                                {%for e in tpmas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
                         </div>                    
-                    </td>                                        
+                    </td>
                 </tr>
 
                 <tr>
                     <td>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon6">Проб. сбор:</span>
-                            <input id="add_psbor" type="text" value="${psbor}" class="form-control" aria-describedby="basic-addon6" name="add_psbor">
+                        <div class="input-group mb-3">                            
+                            <label class="input-group-text" for="add_priority">Приоритет:</label>
+                            <select id="add_priority" class="form-select" name='add_priority' style="text-align: left;">
+                                {%for e in pmas%}
+              	                    <option value={{e.id}}>{{e.name}}</option>
+                                {% endfor %}
+                            </select>                       
                         </div>                    
-                    </td>                                        
+                    </td>
                 </tr>
 
-                <tr style="height: 20px;">
-                    <td>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon16">Заказчик:</span>
-                            <input id="add_customer" type="text" value="${customer}" class="form-control" aria-describedby="basic-addon16" name="add_customer">
-                        </div>                    
-                    </td>                                        
-                </tr>
-
-                <tr>
-                    <td>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon18">Контакт:</span>
-                            <input id="add_contact" type="text" value="${contact}" class="form-control" name="add_contact">
-                        </div>                    
-                    </td>                                        
-                </tr>
-                
                 <tr>
                     <td>
                         <div class="input-group">
-                            <span class="input-group-text" id="basic-addon9">Комментарий:</span>
-                            <textarea id="add_remark" type="text" rows="4" class="form-control" name="add_remark">${remark}</textarea>
+                            <span class="input-group-text" id="basic-addon9">Задача:</span>
+                            <textarea id="add_name" type="text" rows="4" class="form-control" name="add_name">${name}</textarea>
                         </div>
                     </td>
                 </tr>
@@ -701,17 +645,17 @@ const exampleModal = document.getElementById('DelQuestion')
             </div>
             `;
         
-        let selectElement = document.getElementById('add_vmer');
-        selectElement.value = vmer;
+        // let selectElement = document.getElementById('add_vmer');
+        // selectElement.value = vmer;
 
-        let selectObj = document.getElementById('add_obj');
-        selectObj.value = obj;
+        // let selectObj = document.getElementById('add_obj');
+        // selectObj.value = obj;
 
-        let selectVidopl = document.getElementById('add_vopl');
-        selectVidopl.value = vopl;
+        // let selectVidopl = document.getElementById('add_vopl');
+        // selectVidopl.value = vopl;
 
-        let selectVidoplp = document.getElementById('add_voplp');
-        selectVidoplp.value = voplp;
+        // let selectVidoplp = document.getElementById('add_voplp');
+        // selectVidoplp.value = voplp;
             
     })
 
@@ -987,12 +931,12 @@ const buttonEditClick = () => {
 
 const buttonAddClick = () => {
     
-    const url = '/banketrecadd/'
+    const url = '/staskrecadd/'
     
-    const b_dt = document.getElementById('add_date').value;
-    const b_vmer = document.getElementById('add_vmer').value;
+    const b_dt = document.getElementById('add_dateexe').value;
+    const b_div = document.getElementById('add_div').value;
     const b_obj = document.getElementById('add_obj').value;
-    const b_sum = document.getElementById('add_sum').value;
+    const b_name = document.getElementById('add_name').value;
     const b_vopl = document.getElementById('add_vopl').value;
     const b_kolg = document.getElementById('add_kolg').value;
     const b_prodoplata = document.getElementById('add_predoplata').value;
