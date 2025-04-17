@@ -931,40 +931,30 @@ const buttonEditClick = () => {
 
 const buttonAddClick = () => {
     
+    console.log('In work !!!');
+
     const url = '/staskrecadd/'
     
-    const b_dt = document.getElementById('add_dateexe').value;
-    const b_div = document.getElementById('add_div').value;
-    const b_obj = document.getElementById('add_obj').value;
-    const b_name = document.getElementById('add_name').value;
-    const b_vopl = document.getElementById('add_vopl').value;
-    const b_kolg = document.getElementById('add_kolg').value;
-    const b_prodoplata = document.getElementById('add_predoplata').value;
-    const b_voplp = document.getElementById('add_voplp').value;
-    const b_ssbor = document.getElementById('add_ssbor').value;
-    const b_psbor = document.getElementById('add_psbor').value;
-    const b_customer = document.getElementById('add_customer').value;
-    const b_contact = document.getElementById('add_contact').value;
-    const b_remark = document.getElementById('add_remark').value;
+    const s_dt = document.getElementById('add_date').value;
+    const s_div = document.getElementById('add_div').value;
+    const s_obj = document.getElementById('add_obj').value;
+    const s_name = document.getElementById('add_name').value;
+    const s_sotr = document.getElementById('add_sotr').value;
+    const s_type = document.getElementById('add_type').value;
+    const s_priority = document.getElementById('add_priority').value;
 
     const data = {
-        dt: b_dt,
-        vmer: b_vmer,
-        obj: b_obj,
-        sum: b_sum,
-        vopl: b_vopl,
-        kolg: b_kolg,
-        predoplata: b_prodoplata,
-        voplp: b_voplp,
-        ssbor: b_ssbor,
-        psbor: b_psbor,
-        customer: b_customer,
-        contact: b_contact,
-        remark: b_remark,
+        dt: s_dt,
+        div: s_div,
+        obj: s_obj,
+        name: s_name,
+        sotr: s_sotr,
+        priority: s_priority,
+        type: s_type,
     };
 
     req_data (url, data);
-    console.log(data);
+    //console.log(data);
     location.reload();    
 }    
 

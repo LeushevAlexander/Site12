@@ -72,107 +72,28 @@ def STaskRecAdd (Request):
     # считываем запись из окна создания
     #pk = int (loads(Request.body)['pk'])
 
-    dt = datetime.datetime.strptime((loads(Request.body)['dt']), '%Y-%m-%d').date()
+    dateexe = datetime.datetime.strptime((loads(Request.body)['dt']), '%Y-%m-%d').date()
     objset = Receiver.objects.get(pk=int(loads(Request.body)['obj']))
-    
-    st = loads(Request.body)['vnal'] 
-    vnal = GetF(st)
-
-    st = loads(Request.body)['vbnal']
-    vbnal = GetF(st)
-
-    st = loads(Request.body)['vbs'] 
-    vbs = GetF(st)
-
-    st = loads(Request.body)['vpp'] 
-    vpp = GetF(st)
-
-    st = loads(Request.body)['vpr'] 
-    vpr = GetF(st)
-
-    st = loads(Request.body)['vsr'] 
-    vsr = GetF(st)
-
-    st = loads(Request.body)['vbar'] 
-    vbar = GetF(st)
-
-    st = loads(Request.body)['vkuh'] 
-    vkuh = GetF(st)
-
-    st = loads(Request.body)['chnal'] 
-    chnal = GetF(st)
-
-    st = loads(Request.body)['chbnal'] 
-    chbnal = GetF(st)
-
-    st = loads(Request.body)['kolg']
-    kolg = GetF(st)
-
-    st = loads(Request.body)['gorv'] 
-    gorv = GetF(st)
-
-    st = loads(Request.body)['gork'] 
-    gork = GetF(st)
-
-    st = loads(Request.body)['holv'] 
-    holv = GetF(st)
-
-    st = loads(Request.body)['holk'] 
-    holk = GetF(st)
-
-    st = loads(Request.body)['pizv'] 
-    pizv = GetF(st)
-
-    st = loads(Request.body)['pizk'] 
-    pizk = GetF(st)
-
-    st = loads(Request.body)['desv'] 
-    desv = GetF(st)
-
-    st = loads(Request.body)['desk'] 
-    desk = GetF(st)
-
-    st = loads(Request.body)['kofv'] 
-    kofv = GetF(st)
-
-    st = loads(Request.body)['kofk'] 
-    kofk = GetF(st)
-
-    st = loads(Request.body)['alkv'] 
-    alkv = GetF(st)
-
-    st = loads(Request.body)['alkk'] 
-    alkk = GetF(st)
+    divset = Podrazd.objects.get(pk=int(loads(Request.body)['div']))
+    sotrset = Sotr.objects.get(pk=int(loads(Request.body)['sotr']))
+    typeset = STaskType.objects.get(pk=int(loads(Request.body)['type']))
+    priorityset = STaskPriority.objects.get(pk=int(loads(Request.body)['priority']))
+    name = loads(Request.body)['name']
 
     # теперь изменяем данные в базе
-    B = Den (date=dt, 
-                                        obj=objset,
-                                       vnal=vnal,
-                                       vbnal=vbnal,
-                                       vbc=vbs,
-                                       vpp=vpp,
-                                       vpr=vpr,
-                                       vsert=vsr,
-                                       vb=vbar,
-                                       vk=vkuh,
-                                       chn=chnal,
-                                       chbn=chbnal,
-                                       kolg=kolg,
-                                       gorv=gorv,
-                                       gork=gork,
-                                       holv=holv,
-                                       holk=holk,
-                                       pizv=pizv,
-                                       pizk=pizk,
-                                       kofv=kofv,
-                                       kofk=kofk,
-                                       desv=desv,
-                                       desk=desk,
-                                       alkv=alkv,
-                                       alkk=alkk,
-                                       autor=Request.user.sotr
-                                    )  
-    B.save()  
+    S = STask (
+        date=datetime.now(),
+        dateexecution=dateexe, 
+        name=name,
+        obj=objset,
+        div=divset,
+        sotr=sotrset,
+        type=typeset,
+        priority=priorityset,
+        creator=Request.user.sotr
+    )
+      
+    S.save()  
 
     return render (Request, 'catalog/accessdenied.html', {'title': ''})
 
