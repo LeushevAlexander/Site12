@@ -627,8 +627,8 @@ class STask (models.Model):
     div = models.ForeignKey('Podrazd', on_delete=models.CASCADE, null=True, verbose_name='Подразделение') #ссылка на Подразделение Кухня/Бар/Офис
     type = models.ForeignKey('STaskType', on_delete=models.CASCADE, null=True, verbose_name='Тип') #ссылка на Тип задач
     priority = models.ForeignKey('STaskPriority', on_delete=models.CASCADE, null=True, verbose_name='Приоритет') #ссылка на Приоритет задач
-    dateexecution = models.DateField(null=False, verbose_name='Дата исполнения') # Дата исполнения
-    daterenewal = models.DateField(null=False, verbose_name='Дата продления') # Дата продления
+    dateexecution = models.DateField(null=True, verbose_name='Дата исполнения') # Дата исполнения
+    daterenewal = models.DateField(null=True, verbose_name='Дата продления') # Дата продления
     status = models.ForeignKey('STaskStatus', on_delete=models.CASCADE, null=True, verbose_name='Статус') #ссылка на статус
     executorpassed = models.ForeignKey('Sotr', on_delete=models.CASCADE, null=True, verbose_name='Передано Исполнителю', related_name="executor02") #ссылка на передано Исполнителю
     active = models.BooleanField(default=True) #статус выполнен/невыполнен, активный/неактивный, по умолчанию активный (при создании)

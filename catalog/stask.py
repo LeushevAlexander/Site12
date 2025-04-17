@@ -3,7 +3,7 @@ from json import loads
 from .views import getmenu
 from django.db.models import Q
 from .forms import STaskForm
-from .models import Receiver, Sotr, STask, STaskPriority, STaskType, Podrazd
+from .models import Receiver, Sotr, STask, STaskPriority, STaskType, Podrazd, STaskStatus
 import datetime
 
 def STaskRecDel (Request, bpk):
@@ -72,6 +72,9 @@ def STaskRecAdd (Request):
     # считываем запись из окна создания
     #pk = int (loads(Request.body)['pk'])
 
+    # определяю текущее время   
+    d = datetime.datetime.now()
+
     dateexe = datetime.datetime.strptime((loads(Request.body)['dt']), '%Y-%m-%d').date()
     objset = Receiver.objects.get(pk=int(loads(Request.body)['obj']))
     divset = Podrazd.objects.get(pk=int(loads(Request.body)['div']))
@@ -80,16 +83,19 @@ def STaskRecAdd (Request):
     priorityset = STaskPriority.objects.get(pk=int(loads(Request.body)['priority']))
     name = loads(Request.body)['name']
 
+    statusset = STaskStatus.objects.get(pk=1) # Статус поставлена задача
+
     # теперь изменяем данные в базе
     S = STask (
-        date=datetime.now(),
+        date=d,
         dateexecution=dateexe, 
         name=name,
         obj=objset,
         div=divset,
-        sotr=sotrset,
+        executor=sotrset,
         type=typeset,
         priority=priorityset,
+        status=statusset,
         creator=Request.user.sotr
     )
       
@@ -147,7 +153,7 @@ def STaskView (Request):
 
     begindate = datetime.datetime.strptime(ddate1, '%Y-%m-%d')
 
-    t = STask.objects.filter(date__range=[ddate1, ddate2], active=True).order_by('date')
+    t = STask.objects.filter(active=True).order_by('date')
 
     if Request.method == 'POST':
         tform = STaskForm (Request.POST)

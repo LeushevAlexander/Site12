@@ -75,59 +75,20 @@
         
         <tbody>
 
-            {% for i in bmas %}
+            {% for i in tmas %}
 
                 <tr>
 
                     <td class="gtable.td" style="font-size: large;">
                         {{i.index}}
-
-                        {% if request.user.A_BanketEdit %}
-                        <br/>
-                        <div style="cursor: pointer; display: inline-block;"
-                            data-bs-toggle="modal" data-bs-target="#EditQuestion" data-bs-whatever="{{i.record.pk}}" 
-                            data-bs-remark="{{i.record.remark}}" data-bs-dt="{{i.dt}}" data-bs-sum="{{i.record.sum}}"
-                            data-bs-kolg="{{i.record.kolg}}" data-bs-customer="{{i.record.customer}}"
-                            data-bs-ssbor="{{i.record.ssbor}}" data-bs-contact="{{i.record.contact}}"
-                            data-bs-psbor="{{i.psbor}}" data-bs-predoplata="{{i.record.predoplata}}"
-                            data-bs-vmerpos="{{i.record.vidmer.pk}}" data-bs-objpos="{{i.record.obj.pk}}"
-                            data-bs-voplpos="{{i.vopl}}" data-bs-voplppos="{{i.voplp}}">
-                            <img width="35px" height="35px" src="{% static 'catalog/images/EditIcon.jpg'%}"> 
-                        </div>
-                        <div style="cursor: pointer; display: inline-block;" 
-                            data-bs-toggle="modal" data-bs-target="#DelQuestion" data-bs-whatever="{{i.record.pk}}" 
-                            data-bs-customer="{{i.record.customer}}" data-bs-sum="{{i.record.sum}}" 
-                            data-bs-objname="{{i.record.obj.name}}" data-bs-dt="{{i.dt}}">
-                            <img width="35px" height="35px" src="{% static 'catalog/images/DelIcon.png'%}">
-                        </div>
-                        {% endif %}
-
                     </td>
                     
                     <td class="gtable.td">
-                        <div style="cursor: pointer;"
-                            data-bs-toggle="modal" data-bs-target="#InfoQuestion" data-bs-whatever="{{i.record.pk}}" 
-                            data-bs-remark="{{i.record.remark}}" data-bs-dt="{{i.dt}}" data-bs-sum="{{i.record.sum}}"
-                            data-bs-kolg="{{i.record.kolg}}" data-bs-customer="{{i.record.customer}}"
-                            data-bs-ssbor="{{i.record.ssbor}}" data-bs-contact="{{i.record.contact}}"
-                            data-bs-psbor="{{i.psbor}}" data-bs-predoplata="{{i.record.predoplata}}"
-                            data-bs-vmerpos="{{i.record.vidmer.pk}}" data-bs-objpos="{{i.record.obj.pk}}"
-                            data-bs-voplpos="{{i.vopl}}" data-bs-voplppos="{{i.voplp}}">
-                            {{i.date}}
-                        </div>
+                        {{i.date}}
                     </td>
 
                     <td class="gtable.td">
-                        <div style="cursor: pointer;"
-                            data-bs-toggle="modal" data-bs-target="#InfoQuestion" data-bs-whatever="{{i.record.pk}}" 
-                            data-bs-remark="{{i.record.remark}}" data-bs-dt="{{i.dt}}" data-bs-sum="{{i.record.sum}}"
-                            data-bs-kolg="{{i.record.kolg}}" data-bs-customer="{{i.record.customer}}"
-                            data-bs-ssbor="{{i.record.ssbor}}" data-bs-contact="{{i.record.contact}}"
-                            data-bs-psbor="{{i.psbor}}" data-bs-predoplata="{{i.record.predoplata}}"
-                            data-bs-vmerpos="{{i.record.vidmer.pk}}" data-bs-objpos="{{i.record.obj.pk}}"
-                            data-bs-voplpos="{{i.vopl}}" data-bs-voplppos="{{i.voplp}}">
                             {{i.record.obj.name}}
-                        </div>
                     </td>
 
                     <td class="gtable.td">
