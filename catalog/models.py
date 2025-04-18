@@ -658,3 +658,32 @@ class STaskExe (models.Model): #  Выполнение задачи, измен�
         verbose_name = 'Выполнение задачи'
         verbose_name_plural = 'Выполнение задач'
 
+# Метрики KPI
+class Kpimetric (models.Model):
+    
+    name = models.CharField('Описание метрики', max_length=200)
+    kol = models.IntegerField ('Вес', default=0, null=True) # Вес метрики
+
+    def __str__(self) -> str:
+        return self.name
+
+    class Meta:
+        verbose_name = 'Метрика KPI'
+        verbose_name_plural = 'Метрики KPI'
+
+class Kpi (models.Model):
+    
+    date = models.DateTimeField(null=False, verbose_name='Дата/Время постановки') # Дата/время постановки
+    name = models.CharField('Описание', default='', null=True, max_length=100)
+    metric = models.ForeignKey('Kpimetric', on_delete=models.CASCADE, null=True, verbose_name='Метрика KPI') #ссылка на метрику KPI
+    autor = models.ForeignKey('Sotr', on_delete=models.CASCADE, null=True, verbose_name='Автор', related_name="Sotr00") #ссылка на Автора
+    sotr = models.ForeignKey('Sotr', on_delete=models.CASCADE, null=True, verbose_name='Сотрудник', related_name="Sotr01") #ссылка на Сотрудника для которого определяется метрика
+    kol = models.IntegerField ('Вес', default=0, null=True) # Вес метрики
+    active = models.BooleanField(default=True) #статус активна/неактивна, по умолчанию активный (при создании)
+
+    def __str__(self) -> str:
+        return self.name
+
+    class Meta:
+        verbose_name = 'Показатель KPI'
+        verbose_name_plural = 'Показатели KPI'

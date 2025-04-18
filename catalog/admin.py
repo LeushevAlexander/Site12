@@ -43,6 +43,9 @@ from .models import STaskPriority # Задачи приоритет
 from .models import STaskType # Задачи приоритет
 from .models import STaskExe # Задачи Выполнение
 from .models import STaskStatus # Статус заданий
+from .models import Kpimetric # Метрики KPI
+from .models import Kpi # показатели KPI
+
 
 from django.utils.safestring import mark_safe
 
@@ -225,6 +228,14 @@ class STaskAdmin(admin.ModelAdmin):
     list_display = ('id', 'date', 'name', 'status',  'creator', 'type', 'obj', 'div', 'priority')
     list_display_links = ('id', 'name', 'status',  'creator', 'type', 'obj', 'div', 'priority')
 
+class KpimetricAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'kol')
+    list_display_links = ('id', 'name', 'kol')
+
+class KpiAdmin(admin.ModelAdmin):
+    list_display = ('id', 'date', 'metric', 'name', 'kol', 'sotr', 'autor', )
+    list_display_links = ('id', 'name', 'kol')
+
 admin.site.register(Task)
 admin.site.register(JobTitle, JobTitleAdmin)
 admin.site.register(ChList, ChListAdmin)
@@ -258,6 +269,8 @@ admin.site.register(STaskStatus, STaskStatusAdmin)
 admin.site.register(STaskType, STaskTypeAdmin)
 admin.site.register(STaskPriority, STaskPriorityAdmin)
 admin.site.register(STask, STaskAdmin)
+admin.site.register(Kpimetric, KpimetricAdmin)
+admin.site.register(Kpi, KpiAdmin)
 
 admin.site.site_header = "Администрирование"
 
